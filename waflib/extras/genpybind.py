@@ -29,6 +29,16 @@ def configure(cfg):
     if not cfg.env.GENPYBIND:
         cfg.find_program("genpybind", var="GENPYBIND")
 
+    # find clang reasource dir for builtin headers
+    cfg.env.GENPYBIND_RESOURCE_DIR = os.path.join(
+            cfg.cmd_and_log(cfg.env.LLVM_CONFIG + ["--libdir"]).strip(),
+            "clang",
+            cfg.cmd_and_log(cfg.env.LLVM_CONFIG + ["--version"]).strip())
+    if os.path.exists(cfg.env.GENPYBIND_RESOURCE_DIR):
+        cfg.msg("Checking clang resource dir", cfg.env.GENPYBIND_RESOURCE_DIR)
+    else:
+        cfg.fatal("Clang resource dir not found")
+
 
 @feature("genpybind")
 @before_method("process_source")
@@ -78,7 +88,8 @@ class genpybind(Task.Task): # pylint: disable=invalid-name
         if not self.inputs:
             return
 
-        args = self.find_genpybind() + self._arguments()
+        args = self.find_genpybind() + self._arguments(
+                resource_dir=self.env.GENPYBIND_RESOURCE_DIR)
 
         output = self.run_genpybind(args)
 
