@@ -969,7 +969,7 @@ def apply_flags_msvc(self):
 	if not is_static:
 		for f in self.env.LINKFLAGS:
 			d = f.lower()
-			if d[1:] == 'debug':
+			if d[1:] in ('debug', 'debug:full', 'debug:fastlink'):
 				pdbnode = self.link_task.outputs[0].change_ext('.pdb')
 				self.link_task.outputs.append(pdbnode)
 
