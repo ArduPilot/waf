@@ -213,8 +213,12 @@ def exec_command(self, cmd, **kw):
 			raw_out = self.generator.bld.cmd_and_log(cmd + ['@' + tmp], **kw)
 			ret = 0
 		except Errors.WafError as e:
-			raw_out = e.stdout
-			ret = e.returncode
+			# Use e.msg if e.stdout is not set
+			raw_out = getattr(e, 'stdout', e.msg)
+
+			# Return non-zero error code even if we didn't
+			# get one from the exception object
+			ret = getattr(e, 'returncode', 1)
 
 		for line in raw_out.splitlines():
 			if line.startswith(INCLUDE_PATTERN):
