@@ -412,7 +412,7 @@ class TaskBase(evil):
 			return 'task in %r was not executed for some reason: %r' % (name, self)
 		elif self.hasrun == CRASHED:
 			if isinstance(msg, str):
-				txt = cmd
+				txt = msg
 			else:
 				txt = ' '.join(repr(x) if ' ' in x else x for x in msg)
 
