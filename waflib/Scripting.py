@@ -34,7 +34,7 @@ def waf_entry_point(current_directory, version, wafdir):
 
 	# Store current directory before any chdir
 	Context.waf_dir = wafdir
-	Context.run_dir = Context.launch_dir = current_directory
+	Context.launch_dir = current_directory
 	start_dir = current_directory
 	no_climb = os.environ.get('NOCLIMB')
 
