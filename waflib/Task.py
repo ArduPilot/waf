@@ -605,6 +605,9 @@ class Task(evil):
 		"""
 		Run this task only after the given *task*.
 
+		Calling this method from :py:meth:`waflib.Task.Task.runnable_status` may cause
+		build deadlocks; see :py:meth:`waflib.Tools.fc.fc.runnable_status` for details.
+
 		:param task: task
 		:type task: :py:class:`waflib.Task.Task`
 		"""

@@ -226,6 +226,10 @@ class Parallel(object):
 					pass
 				else:
 					if cond:
+						# The most common reason is conflicting build order declaration
+						# for example: "X run_after Y" and "Y run_after X"
+						# Another can be changing "run_after" dependencies while the build is running
+						# for example: updating "tsk.run_after" in the "runnable_status" method
 						lst = []
 						for tsk in self.postponed:
 							deps = [id(x) for x in tsk.run_after if not x.hasrun]
@@ -298,6 +302,8 @@ class Parallel(object):
 	def mark_finished(self, tsk):
 		def try_unfreeze(x):
 			# DAG ancestors are likely to be in the incomplete set
+			# This assumes that the run_after contents have not changed
+			# after the build starts, else a deadlock may occur
 			if x in self.incomplete:
 				# TODO remove dependencies to free some memory?
 				# x.run_after.remove(tsk)

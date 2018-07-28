@@ -121,6 +121,8 @@ class fc(Task.Task):
 		for k in ins.keys():
 			for a in ins[k]:
 				a.run_after.update(outs[k])
+				for x in outs[k]:
+					self.generator.bld.producer.revdeps[x].add(a)
 
 				# the scanner cannot output nodes, so we have to set them
 				# ourselves as task.dep_nodes (additional input nodes)
