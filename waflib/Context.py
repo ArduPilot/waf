@@ -502,7 +502,7 @@ class Context(ctx):
 			def build(bld):
 				bld.to_log('starting the build')
 
-		Provide a logger on the context class or override this methid if necessary.
+		Provide a logger on the context class or override this method if necessary.
 
 		:param msg: message
 		:type msg: string

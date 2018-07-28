@@ -556,7 +556,7 @@ def process_rule(self):
 	* chmod: permissions for the resulting files (integer value such as Utils.O755)
 	* shell: set to False to execute the command directly (default is True to use a shell)
 	* scan: scanner function
-	* vars: list of variables to trigger rebuilts, such as CFLAGS
+	* vars: list of variables to trigger rebuilds, such as CFLAGS
 	* cls_str: string to display when executing the task
 	* cls_keyword: label to display when executing the task
 	* cache_rule: by default, try to re-use similar classes, set to False to disable

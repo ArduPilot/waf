@@ -161,7 +161,7 @@ class link_task(Task.Task):
 				nums = self.generator.vnum.split('.')
 				if self.env.DEST_BINFMT == 'pe':
 					# include the version in the dll file name,
-					# the import lib file name stays unversionned.
+					# the import lib file name stays unversioned.
 					name = name + '-' + nums[0]
 				elif self.env.DEST_OS == 'openbsd':
 					pattern = '%s.%s' % (pattern, nums[0])

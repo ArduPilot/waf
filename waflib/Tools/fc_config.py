@@ -281,7 +281,7 @@ def _parse_flink_token(lexer, token, tmp_flags):
 	elif POSIX_LIB_FLAGS.match(token):
 		tmp_flags.append(token)
 	else:
-		# ignore anything not explicitely taken into account
+		# ignore anything not explicitly taken into account
 		pass
 
 	t = lexer.get_token()

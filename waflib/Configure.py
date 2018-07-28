@@ -286,7 +286,7 @@ class ConfigurationContext(Context.Context):
 
 	def eval_rules(self, rules):
 		"""
-		Execute configuration tests provided as list of funcitons to run
+		Execute configuration tests provided as list of functions to run
 
 		:param rules: list of configuration method names
 		:type rules: list of string

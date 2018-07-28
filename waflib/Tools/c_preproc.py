@@ -146,7 +146,7 @@ def repl(m):
 
 prec = {}
 """
-Operator precendence rules required for parsing expressions of the form::
+Operator precedence rules required for parsing expressions of the form::
 
 	#if 1 && 2 != 0
 """

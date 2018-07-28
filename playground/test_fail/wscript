@@ -3,7 +3,7 @@
 # Thomas Nagy, 2011 (ita)
 
 """
-Map a compilation failure to a successs status. People playing with C++ templates
+Map a compilation failure to a success status. People playing with C++ templates
 might need this.
 """
 

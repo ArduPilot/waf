@@ -57,7 +57,7 @@ def build(bld):
 
 	# to execute all tests:
 	# $ waf --alltests
-	# to set this behaviour permanenly:
+	# to set this behaviour permanently:
 	#bld.options.all_tests = True
 	bld.options.clear_failed_tests = True
 

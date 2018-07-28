@@ -884,7 +884,7 @@ class BuildContext(Context.Context):
 
 		:param dest: absolute path of the symlink
 		:type dest: :py:class:`waflib.Node.Node` or string (absolute path)
-		:param src: link contents, which is a relative or abolute path which may exist or not
+		:param src: link contents, which is a relative or absolute path which may exist or not
 		:type src: string
 		:param env: configuration set for performing substitutions in dest
 		:type env: :py:class:`waflib.ConfigSet.ConfigSet`
