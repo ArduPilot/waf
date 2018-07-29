@@ -1,3 +1,9 @@
+NEW IN WAF 2.0.10
+-----------------
+* Add a task semaphore system
+* Fix --help when no wscript is supplied #2184
+* Fix Fortran processing with generated Fortran files
+
 NEW IN WAF 2.0.9
 ----------------
 * Add dependencies on scriptlet outputs
