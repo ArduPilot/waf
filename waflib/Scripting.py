@@ -34,7 +34,7 @@ def waf_entry_point(current_directory, version, wafdir):
 
 	# Store current directory before any chdir
 	Context.waf_dir = wafdir
-	Context.launch_dir = current_directory
+	Context.run_dir = Context.launch_dir = current_directory
 	start_dir = current_directory
 	no_climb = os.environ.get('NOCLIMB')
 
@@ -122,7 +122,8 @@ def waf_entry_point(current_directory, version, wafdir):
 		if no_climb:
 			break
 
-	if not Context.run_dir:
+	wscript = os.path.normpath(os.path.join(Context.run_dir, Context.WSCRIPT_FILE))
+	if not os.path.exists(wscript):
 		if options.whelp:
 			Logs.warn('These are the generic options (no wscript/project found)')
 			ctx.parser.print_help()
@@ -137,7 +138,7 @@ def waf_entry_point(current_directory, version, wafdir):
 		sys.exit(1)
 
 	try:
-		set_main_module(os.path.normpath(os.path.join(Context.run_dir, Context.WSCRIPT_FILE)))
+		set_main_module(wscript)
 	except Errors.WafError as e:
 		Logs.pprint('RED', e.verbose_msg)
 		Logs.error(str(e))
