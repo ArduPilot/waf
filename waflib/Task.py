@@ -133,10 +133,12 @@ evil = store_task_type('evil', (object,), {})
 
 class Task(evil):
 	"""
-	This class deals with the filesystem (:py:class:`waflib.Node.Node`). The method :py:class:`waflib.Task.Task.runnable_status`
-	uses a hash value (from :py:class:`waflib.Task.Task.signature`) which is persistent from build to build. When the value changes,
-	the task has to be executed. The method :py:class:`waflib.Task.Task.post_run` will assign the task signature to the output
-	nodes (if present).
+	Task objects represents actions to perform such as commands to execute by calling the `run` method.
+
+	Detecting when to execute a task occurs in the method :py:meth:`waflib.Task.Task.runnable_status`.
+
+	Detecting which tasks to execute is performed through a hash value returned by
+	:py:meth:`waflib.Task.Task.signature`. The task signature is persistent from build to build.
 	"""
 	vars = []
 	"""ConfigSet variables that should trigger a rebuild (class attribute used for :py:meth:`waflib.Task.Task.sig_vars`)"""
@@ -1353,4 +1355,55 @@ def deep_inputs(cls):
 
 TaskBase = Task
 "Provided for compatibility reasons, TaskBase should not be used"
+
+class TaskSemaphore(object):
+	"""
+	Task semaphores provide a simple and efficient way of throttling the amount of
+	a particular task to run concurrently. The throttling value is capped
+	by the amount of maximum jobs, so for example, a `TaskSemaphore(10)`
+	has no effect in a `-j2` build.
+
+	Task semaphores are typically specified on the task class level::
+
+		class compile(waflib.Task.Task):
+			semaphore = waflib.Task.TaskSemaphore(2)
+			run_str = 'touch ${TGT}'
+
+	Task semaphores are meant to be used by the build scheduler in the main
+	thread, so there are no guarantees of thread safety.
+	"""
+	def __init__(self, num):
+		"""
+		:param num: maximum value of concurrent tasks
+		:type num: int
+		"""
+		self.num = num
+		self.locking = set()
+		self.waiting = set()
+
+	def is_locked(self):
+		"""Returns True if this semaphore cannot be acquired by more tasks"""
+		return len(self.locking) >= self.num
+
+	def acquire(self, tsk):
+		"""
+		Mark the semaphore as used by the given task (not re-entrant).
+
+		:param tsk: task object
+		:type tsk: :py:class:`waflib.Task.Task`
+		:raises: :py:class:`IndexError` in case the resource is already acquired
+		"""
+		if self.is_locked():
+			raise IndexError('Cannot lock more %r' % self.locking)
+		self.locking.add(tsk)
+
+	def release(self, tsk):
+		"""
+		Mark the semaphore as unused by the given task.
+
+		:param tsk: task object
+		:type tsk: :py:class:`waflib.Task.Task`
+		:raises: :py:class:`KeyError` in case the resource is not acquired by the task
+		"""
+		self.locking.remove(tsk)
 

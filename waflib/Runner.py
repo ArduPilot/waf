@@ -329,6 +329,14 @@ class Parallel(object):
 					try_unfreeze(x)
 			del self.revdeps[tsk]
 
+		if hasattr(tsk, 'semaphore'):
+			sem = tsk.semaphore
+			sem.release(tsk)
+			while sem.waiting and not sem.is_locked():
+				# take a frozen task, make it ready to run
+				x = sem.waiting.pop()
+				self._add_task(x)
+
 	def get_out(self):
 		"""
 		Waits for a Task that task consumers add to :py:attr:`waflib.Runner.Parallel.out` after execution.
@@ -352,7 +360,28 @@ class Parallel(object):
 		:param tsk: task instance
 		:type tsk: :py:attr:`waflib.Task.Task`
 		"""
+		# TODO change in waf 2.1
 		self.ready.put(tsk)
+
+	def _add_task(self, tsk):
+		if hasattr(tsk, 'semaphore'):
+			sem = tsk.semaphore
+			try:
+				sem.acquire(tsk)
+			except IndexError:
+				sem.waiting.add(tsk)
+				return
+
+		self.count += 1
+		self.processed += 1
+		if self.numjobs == 1:
+			tsk.log_display(tsk.generator.bld)
+			try:
+				self.process_task(tsk)
+			finally:
+				self.out.put(tsk)
+		else:
+			self.add_task(tsk)
 
 	def process_task(self, tsk):
 		"""
@@ -453,17 +482,7 @@ class Parallel(object):
 
 			st = self.task_status(tsk)
 			if st == Task.RUN_ME:
-				self.count += 1
-				self.processed += 1
-
-				if self.numjobs == 1:
-					tsk.log_display(tsk.generator.bld)
-					try:
-						self.process_task(tsk)
-					finally:
-						self.out.put(tsk)
-				else:
-					self.add_task(tsk)
+				self._add_task(tsk)
 			elif st == Task.ASK_LATER:
 				self.postpone(tsk)
 			elif st == Task.SKIP_ME:
