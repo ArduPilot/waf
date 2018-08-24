@@ -758,14 +758,31 @@ class BuildContext(Context.Context):
 			elif not ln.is_child_of(self.srcnode):
 				Logs.warn('CWD %s is not under %s, forcing --targets=* (run distclean?)', ln.abspath(), self.srcnode.abspath())
 				ln = self.srcnode
-			for tg in self.groups[self.current_group]:
+
+			def is_post(tg, ln):
 				try:
 					p = tg.path
 				except AttributeError:
 					pass
 				else:
 					if p.is_child_of(ln):
-						tgpost(tg)
+						return True
+
+			def is_post_group():
+				for i, g in enumerate(self.groups):
+					if i > self.current_group:
+						for tg in g:
+							if is_post(tg, ln):
+								return True
+
+			if self.post_mode == POST_LAZY and ln != self.srcnode:
+				# partial folder builds require all targets from a previous build group
+				if is_post_group():
+					ln = self.srcnode
+
+			for tg in self.groups[self.current_group]:
+				if is_post(tg, ln):
+					tgpost(tg)
 
 	def get_tasks_group(self, idx):
 		"""
