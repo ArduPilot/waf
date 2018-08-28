@@ -358,13 +358,12 @@ def check_cfg(self, *k, **kw):
 	ret = None
 	try:
 		ret = self.exec_cfg(kw)
-	except self.errors.WafError:
+	except self.errors.WafError as e:
 		if 'errmsg' in kw:
 			self.end_msg(kw['errmsg'], 'YELLOW', **kw)
 		if Logs.verbose > 1:
-			raise
-		else:
-			self.fatal('The configuration failed')
+			self.to_log('Command failure: %s' % e)
+		self.fatal('The configuration failed')
 	else:
 		if not ret:
 			ret = True
