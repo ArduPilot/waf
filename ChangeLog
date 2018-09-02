@@ -1,3 +1,10 @@
+NEW IN WAF 2.0.11
+-----------------
+* Do not raise an exception on check_cfg/mandatory=False/-vv #2193
+* Post past task generators in lazy sub-folder builds #2191
+* Disable warnings on versioned library installation
+* Fix cpplint concurrent execution problems
+
 NEW IN WAF 2.0.10
 -----------------
 * Add a task semaphore system
