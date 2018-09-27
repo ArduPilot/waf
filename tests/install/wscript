@@ -7,7 +7,7 @@ import os
 from waflib import Build, Options, TaskGen, Utils
 
 def build(bld):
-	bld.fatal("Not implemented! Run 'waf configure'")
+	pass
 
 @TaskGen.feature('ruler')
 @TaskGen.before('process_rule')
