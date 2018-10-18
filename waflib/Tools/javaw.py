@@ -471,7 +471,7 @@ def configure(self):
 		self.env.JAVA_HOME = [self.environ['JAVA_HOME']]
 
 	for x in 'javac java jar javadoc'.split():
-		self.find_program(x, var=x.upper(), path_list=java_path)
+		self.find_program(x, var=x.upper(), path_list=java_path, mandatory=(x not in ('javadoc')))
 
 	if 'CLASSPATH' in self.environ:
 		v.CLASSPATH = self.environ['CLASSPATH']
