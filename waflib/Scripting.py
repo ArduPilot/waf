@@ -280,7 +280,7 @@ def distclean_dir(dirname):
 			pass
 
 	try:
-		shutil.rmtree('c4che')
+		shutil.rmtree(Build.CACHE_DIR)
 	except OSError:
 		pass
 
