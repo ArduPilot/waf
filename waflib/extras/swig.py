@@ -20,7 +20,7 @@ SWIG_EXTS = ['.swig', '.i']
 re_module = re.compile('%module(?:\s*\(.*\))?\s+(.+)', re.M)
 
 re_1 = re.compile(r'^%module.*?\s+([\w]+)\s*?$', re.M)
-re_2 = re.compile('[#%]include [<"](.*)[">]', re.M)
+re_2 = re.compile('[#%](?:include|import(?:\(module=".*"\))+|python(?:begin|code)) [<"](.*)[">]', re.M)
 
 class swig(Task.Task):
 	color   = 'BLUE'
