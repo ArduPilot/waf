@@ -598,12 +598,15 @@ def autoconfigure(execute_method):
 			cmd = env.config_cmd or 'configure'
 			if Configure.autoconfig == 'clobber':
 				tmp = Options.options.__dict__
+				launch_dir_tmp = Context.launch_dir
 				if env.options:
 					Options.options.__dict__ = env.options
+				Context.launch_dir = env.launch_dir
 				try:
 					run_command(cmd)
 				finally:
 					Options.options.__dict__ = tmp
+					Context.launch_dir = launch_dir_tmp
 			else:
 				run_command(cmd)
 			run_command(self.cmd)
