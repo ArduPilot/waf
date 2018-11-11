@@ -74,7 +74,7 @@ class task_gen(object):
 		else:
 			self.bld = kw['bld']
 			self.env = self.bld.env.derive()
-			self.path = self.bld.path # emulate chdir when reading scripts
+			self.path = kw.get('path', self.bld.path) # by default, emulate chdir when reading scripts
 
 			# Provide a unique index per folder
 			# This is part of a measure to prevent output file name collisions
