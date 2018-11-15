@@ -163,10 +163,10 @@ class Task(evil):
 	"""File extensions that objects of this task class may create"""
 
 	before = []
-	"""List of task class names to execute before instances of this class"""
+	"""The instances of this class are executed before the instances of classes whose names are in this list"""
 
 	after = []
-	"""List of task class names to execute after instances of this class"""
+	"""The instances of this class are executed after the instances of classes whose names are in this list"""
 
 	hcode = Utils.SIG_NIL
 	"""String representing an additional hash for the class representation"""
