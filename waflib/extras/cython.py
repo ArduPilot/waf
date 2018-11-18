@@ -8,8 +8,9 @@ from waflib.TaskGen import extension
 
 cy_api_pat = re.compile(r'\s*?cdef\s*?(public|api)\w*')
 re_cyt = re.compile(r"""
-	(?:from\s+(\w+)\s+)?   # optionally match "from foo" and capture foo
-	c?import\s(\w+|[*])    # require "import bar" and capture bar
+	^\s*                           # must begin with some whitespace characters
+	(?:from\s+(\w+)(?:\.\w+)*\s+)? # optionally match "from foo(.baz)" and capture foo
+	c?import\s(\w+|[*])            # require "import bar" and capture bar
 	""", re.M | re.VERBOSE)
 
 @extension('.pyx')
