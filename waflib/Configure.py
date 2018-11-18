@@ -568,6 +568,7 @@ def run_build(self, *k, **kw):
 
 	cls_name = kw.get('run_build_cls') or getattr(self, 'run_build_cls', 'build')
 	self.test_bld = bld = Context.create_context(cls_name, top_dir=dir, out_dir=bdir)
+	bld.jobs = 1
 	bld.init_dirs()
 	bld.progress_bar = 0
 	bld.targets = '*'

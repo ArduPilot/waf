@@ -181,10 +181,11 @@ class Parallel(object):
 		The reverse dependency graph of dependencies obtained from Task.run_after
 		"""
 
-		self.spawner = Spawner(self)
-		"""
-		Coordinating daemon thread that spawns thread consumers
-		"""
+		if self.numjobs > 1:
+			self.spawner = Spawner(self)
+			"""
+			Coordinating daemon thread that spawns thread consumers
+			"""
 
 	def get_next_task(self):
 		"""
