@@ -86,12 +86,12 @@ class cython(Task.Task):
 		node = self.inputs[0]
 		txt = node.read()
 
-		mods = []
+		mods = set()
 		for m in re_cyt.finditer(txt):
 			if m.group(1):  # matches "from foo import bar"
-				mods.append(m.group(1))
+				mods.add(m.group(1))
 			else:
-				mods.append(m.group(2))
+				mods.add(m.group(2))
 
 		Logs.debug('cython: mods %r', mods)
 		incs = getattr(self.generator, 'cython_includes', [])
@@ -100,7 +100,7 @@ class cython(Task.Task):
 
 		found = []
 		missing = []
-		for x in mods:
+		for x in sorted(mods):
 			for y in incs:
 				k = y.find_resource(x + '.pxd')
 				if k:
