@@ -258,6 +258,8 @@ class Parallel(object):
 							self.outstanding.append(x)
 							break
 					else:
+						if self.stop or self.error:
+							break
 						raise Errors.WafError('Broken revdeps detected on %r' % self.incomplete)
 				else:
 					tasks = next(self.biter)
