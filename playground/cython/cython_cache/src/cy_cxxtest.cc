@@ -1012,6 +1012,8 @@ static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *s
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
+/* Module declarations from 'cpython.version' */
+
 /* Module declarations from 'cy_cxxtest' */
 __PYX_EXTERN_C void cy_hello(void); /*proto*/
 #define __Pyx_MODULE_NAME "cy_cxxtest"
@@ -1029,7 +1031,9 @@ static const char __pyx_k_pyhello[] = "pyhello";
 static const char __pyx_k_cy_cxxtest[] = "cy_cxxtest";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_hello_cython_world[] = "hello cython-world!";
+static const char __pyx_k_Compiled_with_python_version_s[] = "Compiled with python version %s";
 static const char __pyx_k_home_romain_dev_waf_wrapper_waf[] = "/home/romain/dev/waf-wrapper/waf/playground/cython/src/cy_cxxtest.pyx";
+static PyObject *__pyx_kp_s_Compiled_with_python_version_s;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_cy_cxxtest;
 static PyObject *__pyx_n_s_end;
@@ -1045,12 +1049,12 @@ static PyObject *__pyx_pf_10cy_cxxtest_pyhello(CYTHON_UNUSED PyObject *__pyx_sel
 static PyObject *__pyx_codeobj_;
 /* Late includes */
 
-/* "cy_cxxtest.pyx":3
+/* "cy_cxxtest.pyx":4
  * cimport cy_cxxtest
  * 
  * def pyhello():             # <<<<<<<<<<<<<<
  *     cy_cxxtest.hello()
- * 
+ *     print("Compiled with python version %s" % PY_VERSION)
  */
 
 /* Python wrapper */
@@ -1070,58 +1074,79 @@ static PyObject *__pyx_pw_10cy_cxxtest_1pyhello(PyObject *__pyx_self, CYTHON_UNU
 static PyObject *__pyx_pf_10cy_cxxtest_pyhello(CYTHON_UNUSED PyObject *__pyx_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("pyhello", 0);
 
-  /* "cy_cxxtest.pyx":4
+  /* "cy_cxxtest.pyx":5
  * 
  * def pyhello():
  *     cy_cxxtest.hello()             # <<<<<<<<<<<<<<
+ *     print("Compiled with python version %s" % PY_VERSION)
  * 
- * cdef public api void cy_hello():
  */
   hello();
 
-  /* "cy_cxxtest.pyx":3
+  /* "cy_cxxtest.pyx":6
+ * def pyhello():
+ *     cy_cxxtest.hello()
+ *     print("Compiled with python version %s" % PY_VERSION)             # <<<<<<<<<<<<<<
+ * 
+ * cdef public api void cy_hello():
+ */
+  __pyx_t_1 = __Pyx_PyObject_FromString(PY_VERSION); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyString_Format(__pyx_kp_s_Compiled_with_python_version_s, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__Pyx_PrintOne(0, __pyx_t_2) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "cy_cxxtest.pyx":4
  * cimport cy_cxxtest
  * 
  * def pyhello():             # <<<<<<<<<<<<<<
  *     cy_cxxtest.hello()
- * 
+ *     print("Compiled with python version %s" % PY_VERSION)
  */
 
   /* function exit code */
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("cy_cxxtest.pyhello", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cy_cxxtest.pyx":6
- *     cy_cxxtest.hello()
+/* "cy_cxxtest.pyx":8
+ *     print("Compiled with python version %s" % PY_VERSION)
  * 
  * cdef public api void cy_hello():             # <<<<<<<<<<<<<<
  *     print("hello cython-world!")
- * 
  */
 
 void cy_hello(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("cy_hello", 0);
 
-  /* "cy_cxxtest.pyx":7
+  /* "cy_cxxtest.pyx":9
  * 
  * cdef public api void cy_hello():
  *     print("hello cython-world!")             # <<<<<<<<<<<<<<
- * 
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_hello_cython_world) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_kp_s_hello_cython_world) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
 
-  /* "cy_cxxtest.pyx":6
- *     cy_cxxtest.hello()
+  /* "cy_cxxtest.pyx":8
+ *     print("Compiled with python version %s" % PY_VERSION)
  * 
  * cdef public api void cy_hello():             # <<<<<<<<<<<<<<
  *     print("hello cython-world!")
- * 
  */
 
   /* function exit code */
@@ -1178,6 +1203,7 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_kp_s_Compiled_with_python_version_s, __pyx_k_Compiled_with_python_version_s, sizeof(__pyx_k_Compiled_with_python_version_s), 0, 0, 1, 0},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_cy_cxxtest, __pyx_k_cy_cxxtest, sizeof(__pyx_k_cy_cxxtest), 0, 0, 1, 1},
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
@@ -1199,14 +1225,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cy_cxxtest.pyx":3
+  /* "cy_cxxtest.pyx":4
  * cimport cy_cxxtest
  * 
  * def pyhello():             # <<<<<<<<<<<<<<
  *     cy_cxxtest.hello()
- * 
+ *     print("Compiled with python version %s" % PY_VERSION)
  */
-  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_romain_dev_waf_wrapper_waf, __pyx_n_s_pyhello, 3, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 3, __pyx_L1_error)
+  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_romain_dev_waf_wrapper_waf, __pyx_n_s_pyhello, 4, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -1485,22 +1511,22 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "cy_cxxtest.pyx":3
+  /* "cy_cxxtest.pyx":4
  * cimport cy_cxxtest
  * 
  * def pyhello():             # <<<<<<<<<<<<<<
  *     cy_cxxtest.hello()
- * 
+ *     print("Compiled with python version %s" % PY_VERSION)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10cy_cxxtest_1pyhello, NULL, __pyx_n_s_cy_cxxtest); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 3, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10cy_cxxtest_1pyhello, NULL, __pyx_n_s_cy_cxxtest); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyhello, __pyx_t_1) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyhello, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "cy_cxxtest.pyx":1
- * cimport cy_cxxtest             # <<<<<<<<<<<<<<
+ * from cpython.version cimport PY_VERSION             # <<<<<<<<<<<<<<
+ * cimport cy_cxxtest
  * 
- * def pyhello():
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
