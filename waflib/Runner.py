@@ -37,6 +37,8 @@ class PriorityTasks(object):
 		return len(self.lst)
 	def __iter__(self):
 		return iter(self.lst)
+	def __str__(self):
+		return 'PriorityTasks: [%s]' % '\n  '.join(str(x) for x in self.lst)
 	def clear(self):
 		self.lst = []
 	def append(self, task):
