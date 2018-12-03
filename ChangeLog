@@ -1,3 +1,10 @@
+NEW IN WAF 2.0.13
+-----------------
+* Fix "broken revdeps" extra error message on certain build failures
+* Avoid duplicate flags in Python configuration tests
+* Find more Swig dependencies #2206
+* Avoid spawning threads with -j1 on AIX systems
+
 NEW IN WAF 2.0.12
 -----------------
 * Fix broken inheritance task trees #2194
