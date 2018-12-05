@@ -49,7 +49,7 @@ try:
 	from hashlib import md5
 except ImportError:
 	try:
-		from md5 import md5
+		from hashlib import sha1 as md5
 	except ImportError:
 		# never fail to enable fixes from another module
 		pass
