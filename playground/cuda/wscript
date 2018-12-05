@@ -16,14 +16,23 @@ def configure(conf):
 	# conf.env.LIBPATH_CUDA = ['c:\\foo\\bar\\lib']
 	# conf.env.INCLUDES_CUDA = ['c:\\foo\\bar\\includes']
 
+	conf.env = conf.all_envs['cuda'] = conf.env.derive()
 	conf.load('cuda', tooldir='.')
 
 def build(bld):
 
+	# native application
+	bld.program(
+		source = 'test.cpp',
+		target = 'testapp',
+		)
+
+	# cuda application
 	t = bld.program(
 		source = 'test.cu main.cpp',
 		target = 'app',
-		use    = 'CUDA CUDART')
+		use    = 'CUDA CUDART',
+                env    = bld.all_envs['cuda'])
 
 	#t.env.CUDAFLAGS = ['-deviceemu']
 	# --ptxas-options="-v"
