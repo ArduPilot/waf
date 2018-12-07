@@ -4,7 +4,6 @@
 
 "cuda"
 
-import os
 from waflib import Task
 from waflib.TaskGen import extension
 from waflib.Tools import ccroot, c_preproc
@@ -21,6 +20,14 @@ class cuda(Task.Task):
 @extension('.cu', '.cuda')
 def c_hook(self, node):
 	return self.create_compiled_task('cuda', node)
+
+@extension('.cpp')
+def cxx_hook(self, node):
+	# override processing for one particular type of file
+	if getattr(self, 'cuda', False):
+		return self.create_compiled_task('cuda', node)
+	else:
+		return self.create_compiled_task('cxx', node)
 
 def configure(conf):
 	conf.find_program('nvcc', var='NVCC')
