@@ -29,7 +29,7 @@ You would have to run::
 import os, shutil
 from waflib import Task, Utils, Errors, Node
 from waflib.Configure import conf
-from waflib.TaskGen import feature, before_method, after_method
+from waflib.TaskGen import feature, before_method, after_method, taskgen_method
 
 from waflib.Tools import ccroot
 ccroot.USELIB_VARS['javac'] = set(['CLASSPATH', 'JAVACFLAGS'])
@@ -107,6 +107,32 @@ def apply_java(self):
 	if names:
 		tsk.env.append_value('JAVACFLAGS', ['-sourcepath', names])
 
+
+@taskgen_method
+def java_use_rec(self, name, **kw):
+	"""
+	Processes recursively the *use* attribute for each referred java compilation
+	"""
+	if name in self.tmp_use_seen:
+		return
+
+	self.tmp_use_seen.append(name)
+
+	try:
+		y = self.bld.get_tgen_by_name(name)
+	except Errors.WafError:
+		self.uselib.append(name)
+		return
+	else:
+		y.post()
+		# Add generated JAR name for CLASSPATH. Task ordering (set_run_after)
+		# is already guaranted by ordering done between the single tasks
+		if hasattr(y, 'jar_task'):
+			self.use_lst.append(y.jar_task.outputs[0].abspath())
+
+	for x in self.to_list(getattr(y, 'use', [])):
+		self.java_use_rec(x)
+
 @feature('javac')
 @before_method('propagate_uselib_vars')
 @after_method('apply_java')
@@ -114,7 +140,8 @@ def use_javac_files(self):
 	"""
 	Processes the *use* attribute referring to other java compilations
 	"""
-	lst = []
+	self.use_lst = []
+	self.tmp_use_seen = []
 	self.uselib = self.to_list(getattr(self, 'uselib', []))
 	names = self.to_list(getattr(self, 'use', []))
 	get = self.bld.get_tgen_by_name
@@ -126,12 +153,17 @@ def use_javac_files(self):
 		else:
 			y.post()
 			if hasattr(y, 'jar_task'):
-				lst.append(y.jar_task.outputs[0].abspath())
+				self.use_lst.append(y.jar_task.outputs[0].abspath())
 				self.javac_task.set_run_after(y.jar_task)
 			else:
 				for tsk in y.tasks:
 					self.javac_task.set_run_after(tsk)
-	self.env.append_value('CLASSPATH', lst)
+
+		# If recurse_use then recursively add use attribute for each used one
+		if getattr(self, 'recurse_use', False):
+			self.java_use_rec(x)
+
+	self.env.append_value('CLASSPATH', self.use_lst)
 
 @feature('javac')
 @after_method('apply_java', 'propagate_uselib_vars', 'use_javac_files')
