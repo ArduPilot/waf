@@ -24,6 +24,87 @@ You would have to run::
    java -jar /path/to/jython.jar waf configure
 
 [1] http://www.jython.org/
+
+Usage
+=====
+
+Load the "java" tool.
+
+def configure(conf):
+	conf.load('java')
+
+Java tools will be autodetected and eventually, if present, the quite
+standard JAVA_HOME environment variable will be used. The also standard
+CLASSPATH variable is used for library searching.
+
+In configuration phase checks can be done on the system environment, for
+example to check if a class is known in the classpath:
+
+	conf.check_java_class('java.io.FileOutputStream')
+
+or if the system supports JNI applications building:
+
+	conf.check_jni_headers()
+
+
+The java tool supports compiling java code, creating jar files and
+creating javadoc documentation. This can be either done separately or
+together in a single definition.
+For example to manage them separately:
+
+	bld(features  = 'javac',
+		srcdir    = 'src',
+		compat    = '1.7',
+		use       = 'animals',
+		name      = 'cats-src',
+	)
+
+	bld(features  = 'jar',
+		basedir   = '.',
+		destfile  = '../cats.jar',
+		name      = 'cats',
+		use       = 'cats-src'
+	)
+
+
+Or together by defining all the needed attributes:
+
+	bld(features   = 'javac jar javadoc',
+		srcdir     = 'src/',  # folder containing the sources to compile
+		outdir     = 'src',   # folder where to output the classes (in the build directory)
+		compat     = '1.6',   # java compatibility version number
+		classpath  = ['.', '..'],
+
+		# jar
+		basedir    = 'src', # folder containing the classes and other files to package (must match outdir)
+		destfile   = 'foo.jar', # do not put the destfile in the folder of the java classes!
+		use        = 'NNN',
+		jaropts    = ['-C', 'default/src/', '.'], # can be used to give files
+		manifest   = 'src/Manifest.mf', # Manifest file to include
+
+		# javadoc
+		javadoc_package = ['com.meow' , 'com.meow.truc.bar', 'com.meow.truc.foo'],
+		javadoc_output  = 'javadoc',
+	)
+
+External jar dependencies can be mapped to a standard waf "use" dependency by
+setting an environment variable with a CLASSPATH_ prefix in the configuration,
+for example:
+
+	conf.env.CLASSPATH_NNN = ['aaaa.jar', 'bbbb.jar']
+
+and then NNN can be freely used in rules as:
+
+	use        = 'NNN',
+
+In the java tool the dependencies via use are not transitive by default, as
+this necessity depends on the code. To enable recursive dependency scanning
+use:
+		recurse_use = True
+
+Unit tests can be integrated in the waf unit test environment using the
+javatest extra.
+
 """
 
 import os, shutil
