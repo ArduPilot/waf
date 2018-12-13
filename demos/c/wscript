@@ -75,7 +75,7 @@ def configure(conf):
 def build(bld):
 	bld.env.DEFINES=['WAF=1']
 
-	bld.recurse('program stlib shlib')
+	bld.recurse('program stlib stlib-deps shlib')
 	#bld.install_files('/tmp/foo', 'wscript')
 	#bld.env.PREFIX='/tmp/foo'
 	bld.install_files('${PREFIX}/', 'program/a.h  program/main.c', relative_trick=False)

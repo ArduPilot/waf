@@ -238,6 +238,17 @@ def rm_tgt(cls):
 	setattr(cls, 'run', wrap)
 rm_tgt(stlink_task)
 
+@feature('skip_stlib_link_deps')
+@before_method('process_use')
+def apply_skip_stlib_link_deps(self):
+	"""
+	This enables an optimization in the :py:func:wafilb.Tools.ccroot.processes_use: method that skips dependency and
+	link flag optimizations for targets that generate static libraries (via the :py:class:Tools.ccroot.stlink_task task).
+	The actual behavior is implemented in :py:func:wafilb.Tools.ccroot.processes_use: method so this feature only tells waf
+	to enable the new behavior.
+	"""
+	self.env.SKIP_STLIB_LINK_DEPS = True
+
 @feature('c', 'cxx', 'd', 'fc', 'asm')
 @after_method('process_source')
 def apply_link(self):
@@ -386,7 +397,11 @@ def process_use(self):
 		y = self.bld.get_tgen_by_name(x)
 		var = y.tmp_use_var
 		if var and link_task:
-			if var == 'LIB' or y.tmp_use_stlib or x in names:
+			if self.env.SKIP_STLIB_LINK_DEPS and isinstance(link_task, stlink_task):
+				# If the skip_stlib_link_deps feature is enabled then we should
+				# avoid adding lib deps to the stlink_task instance.
+				pass
+			elif var == 'LIB' or y.tmp_use_stlib or x in names:
 				self.env.append_value(var, [y.target[y.target.rfind(os.sep) + 1:]])
 				self.link_task.dep_nodes.extend(y.link_task.outputs)
 				tmp_path = y.link_task.outputs[0].parent.path_from(self.get_cwd())
