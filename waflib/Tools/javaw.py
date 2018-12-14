@@ -99,8 +99,13 @@ and then NNN can be freely used in rules as:
 
 In the java tool the dependencies via use are not transitive by default, as
 this necessity depends on the code. To enable recursive dependency scanning
-use:
+use on a specific rule:
+
 		recurse_use = True
+
+Or build wise by setting the RECURSE_JAVA environment variable to True:
+
+		bld.env.RECURSE_JAVA = True
 
 Unit tests can be integrated in the waf unit test environment using the
 javatest extra.
@@ -240,8 +245,8 @@ def use_javac_files(self):
 				for tsk in y.tasks:
 					self.javac_task.set_run_after(tsk)
 
-		# If recurse_use then recursively add use attribute for each used one
-		if getattr(self, 'recurse_use', False):
+		# If recurse use scan is enabled recursively add use attribute for each used one
+		if getattr(self, 'recurse_use', False) or self.bld.env.RECURSE_JAVA:
 			self.java_use_rec(x)
 
 	self.env.append_value('CLASSPATH', self.use_lst)

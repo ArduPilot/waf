@@ -10,13 +10,16 @@
 # a project with many java artifacts and complex dependencies a manual
 # management may be expensive.
 #
-# By setting recurse_use to True the recursive behaviour is enabled.
+# By setting recurse_use to True (or build wise by setting RECURSE_JAVA env
+# variable to True) the recursive behaviour is enabled.
 #
 # Directory d tests the case when recursion stops earlier since
 # a dependency is already explicitly defined
 
 def configure(conf):
 	conf.load('java')
+	# For build wide enabling:
+	# conf.env.RECURSE_JAVA = True
 
 def build(bld):
 	bld.recurse('a b c d')
