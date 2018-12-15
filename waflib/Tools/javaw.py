@@ -38,19 +38,18 @@ standard JAVA_HOME environment variable will be used. The also standard
 CLASSPATH variable is used for library searching.
 
 In configuration phase checks can be done on the system environment, for
-example to check if a class is known in the classpath:
+example to check if a class is known in the classpath::
 
 	conf.check_java_class('java.io.FileOutputStream')
 
-or if the system supports JNI applications building:
+or if the system supports JNI applications building::
 
 	conf.check_jni_headers()
 
 
 The java tool supports compiling java code, creating jar files and
 creating javadoc documentation. This can be either done separately or
-together in a single definition.
-For example to manage them separately:
+together in a single definition. For example to manage them separately::
 
 	bld(features  = 'javac',
 		srcdir    = 'src',
@@ -67,7 +66,7 @@ For example to manage them separately:
 	)
 
 
-Or together by defining all the needed attributes:
+Or together by defining all the needed attributes::
 
 	bld(features   = 'javac jar javadoc',
 		srcdir     = 'src/',  # folder containing the sources to compile
@@ -88,12 +87,12 @@ Or together by defining all the needed attributes:
 	)
 
 External jar dependencies can be mapped to a standard waf "use" dependency by
-setting an environment variable with a CLASSPATH_ prefix in the configuration,
-for example:
+setting an environment variable with a CLASSPATH prefix in the configuration,
+for example::
 
 	conf.env.CLASSPATH_NNN = ['aaaa.jar', 'bbbb.jar']
 
-and then NNN can be freely used in rules as:
+and then NNN can be freely used in rules as::
 
 	use        = 'NNN',
 
@@ -103,13 +102,11 @@ use on a specific rule:
 
 		recurse_use = True
 
-Or build wise by setting the RECURSE_JAVA environment variable to True:
+Or build-wise by setting RECURSE_JAVA:
 
 		bld.env.RECURSE_JAVA = True
 
-Unit tests can be integrated in the waf unit test environment using the
-javatest extra.
-
+Unit tests can be integrated in the waf unit test environment using the javatest extra.
 """
 
 import os, shutil
