@@ -53,3 +53,5 @@ def build(bld):
 		source   = ['inc/message_inc.proto', 'inc/message.proto'],
 		use = 'PROTOBUF',
 		protoc_includes = ['inc'])
+
+	bld.recurse('increcurse')

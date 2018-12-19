@@ -104,7 +104,7 @@ class protoc(Task):
 
 		if 'py' in self.generator.features or 'javac' in self.generator.features:
 			for incpath in getattr(self.generator, 'protoc_includes', []):
-				search_nodes.append(self.generator.bld.path.find_node(incpath))
+				search_nodes.append(self.generator.path.find_node(incpath))
 
 		def parse_node(node):
 			if node in seen:
@@ -219,7 +219,12 @@ def process_protoc(self, node):
 	# For C++ standard include files dirs are used,
 	# but this doesn't apply to Python for example
 	for incpath in getattr(self, 'protoc_includes', []):
-		incdirs.append(self.path.find_node(incpath).bldpath())
+		incpath_node = self.path.find_node(incpath)
+		if incpath_node:
+			incdirs.append(incpath_node.bldpath())
+		else:
+			raise Errors.WafError('protoc: include path %r does not exist' % incpath)
+
 	tsk.env.PROTOC_INCPATHS = incdirs
 
 	# PR2115: protoc generates output of .proto files in nested
