@@ -208,7 +208,7 @@ class lazy_generator(object):
 
 	next = __next__
 
-is_win32 = os.sep == '\\' or sys.platform == 'win32' # msys2
+is_win32 = os.sep == '\\' or sys.platform == 'win32' or os.name == 'nt' # msys2
 """
 Whether this system is a Windows series
 """
