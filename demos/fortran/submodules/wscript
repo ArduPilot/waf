@@ -18,3 +18,9 @@ def build(bld):
 		source = 'parent.f90 container.f90 helper.f90',
 		target = 'fudge',
 	)
+	bld(
+		features = 'fc fcprogram',
+		source = 'submain.f90',
+		use = 'fudge',
+		target = 'submain',
+	)

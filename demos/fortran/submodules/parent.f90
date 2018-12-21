@@ -7,6 +7,15 @@ module parent
   end type parent_type
 
   interface
+    module subroutine init(p, mother, father)
+      type(parent_type), intent(out) :: p
+      real, intent(in) :: mother, father
+    end subroutine init
+
+    module subroutine harmonize(p)
+      type(parent_type), intent(inout) :: p
+    end subroutine harmonize
+
     module function parent_weight(p) result(w)
       type(parent_type), intent(in) :: p
       real :: w
