@@ -67,6 +67,13 @@ Example for Java:
                 protoc_includes = ['inc']) # for protoc to search dependencies
 
 
+Protoc includes passed via protoc_includes are either relative to the taskgen
+or to the project and are searched in this order.
+
+Include directories external to the waf project can also be passed to the
+extra by using protoc_extincludes
+
+                protoc_extincludes = ['/usr/include/pblib']
 
 
 Notes when using this tool:
@@ -82,7 +89,7 @@ Notes when using this tool:
 """
 
 class protoc(Task):
-	run_str = '${PROTOC} ${PROTOC_FL:PROTOC_FLAGS} ${PROTOC_ST:INCPATHS} ${PROTOC_ST:PROTOC_INCPATHS} ${SRC[0].bldpath()}'
+	run_str = '${PROTOC} ${PROTOC_FL:PROTOC_FLAGS} ${PROTOC_ST:INCPATHS} ${PROTOC_ST:PROTOC_INCPATHS} ${PROTOC_ST:PROTOC_EXTINCPATHS} ${SRC[0].bldpath()}'
 	color   = 'BLUE'
 	ext_out = ['.h', 'pb.cc', '.py', '.java']
 	def scan(self):
@@ -104,7 +111,17 @@ class protoc(Task):
 
 		if 'py' in self.generator.features or 'javac' in self.generator.features:
 			for incpath in getattr(self.generator, 'protoc_includes', []):
-				search_nodes.append(self.generator.path.find_node(incpath))
+				incpath_node = self.generator.path.find_node(incpath)
+				if incpath_node:
+					search_nodes.append(incpath_node)
+				else:
+					# Check if relative to top-level for extra tg dependencies
+					incpath_node = self.generator.bld.path.find_node(incpath)
+					if incpath_node:
+						search_nodes.append(incpath_node)
+					else:
+						raise Errors.WafError('protoc: include path %r does not exist' % incpath)
+
 
 		def parse_node(node):
 			if node in seen:
@@ -126,7 +143,7 @@ class protoc(Task):
 		parse_node(node)
 		# Add also dependencies path to INCPATHS so protoc will find the included file
 		for deppath in nodes:
-			self.env.append_value('INCPATHS', deppath.parent.bldpath())
+			self.env.append_unique('INCPATHS', deppath.parent.bldpath())
 		return (nodes, names)
 
 @extension('.proto')
@@ -223,9 +240,17 @@ def process_protoc(self, node):
 		if incpath_node:
 			incdirs.append(incpath_node.bldpath())
 		else:
-			raise Errors.WafError('protoc: include path %r does not exist' % incpath)
+			# Check if relative to top-level for extra tg dependencies
+			incpath_node = self.bld.path.find_node(incpath)
+			if incpath_node:
+				incdirs.append(incpath_node.bldpath())
+			else:
+				raise Errors.WafError('protoc: include path %r does not exist' % incpath)
 
 	tsk.env.PROTOC_INCPATHS = incdirs
+
+	# Include paths external to the waf project (ie. shared pb repositories)
+	tsk.env.PROTOC_EXTINCPATHS = getattr(self, 'protoc_extincludes', [])
 
 	# PR2115: protoc generates output of .proto files in nested
 	# directories  by canonicalizing paths. To avoid this we have to pass
