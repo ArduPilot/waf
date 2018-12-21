@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 
+import os
+from waflib import Logs
+
 top = '.'
 out = 'build'
 
@@ -10,7 +13,10 @@ def configure(conf):
 	conf.load('compiler_cxx python java protoc')
 	conf.check_python_version(minver=(2, 5, 0))
 	# Here you have to point to your protobuf-java JAR
-	conf.env.CLASSPATH_PROTOBUF = ['/tmp/cp/protobuf-java-2.5.0.jar']
+	if os.path.isfile('/tmp/cp/protobuf-java-2.5.0.jar'):
+		conf.env.CLASSPATH_PROTOBUF = ['/tmp/cp/protobuf-java-2.5.0.jar']
+	else:
+		Logs.warn('Edit the wscript file and set CLASSPATH_PROTOBUF for java')
 
 def build(bld):
 	bld(
@@ -46,12 +52,13 @@ def build(bld):
 		source   = ['incboth/messageboth_inc.proto', 'incboth/messageboth.proto'],
 		protoc_includes = ['incboth']) # either protoc_includes or includes would work in this case
 
-	bld(
-		features = 'javac protoc',
-		name = 'pbjava',
-		srcdir = 'inc/',
-		source   = ['inc/message_inc.proto', 'inc/message.proto'],
-		use = 'PROTOBUF',
-		protoc_includes = ['inc'])
+	if bld.env.CLASSPATH_PROTOBUF:
+		bld(
+			features = 'javac protoc',
+			name = 'pbjava',
+			srcdir = 'inc/',
+			source   = ['inc/message_inc.proto', 'inc/message.proto'],
+			use = 'PROTOBUF',
+			protoc_includes = ['inc'])
 
 	bld.recurse('increcurse')
