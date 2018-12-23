@@ -1,3 +1,12 @@
+NEW IN WAF 2.0.14
+-----------------
+* Support Fortran 2008 submodules #2205
+* Possible solution for Msys/Python 3.6 path issues #2217
+* Support NEC SX-Aurora TSUBASA system's Fortran compiler extras/fc_nfort.py #2206
+* Fix ignored configuration flags in gccdeps extras/gccdeps.py #2203
+* Fix included protoc search on nested wscripts extras/protoc.py #2202
+* Support extra taskgen and out of project include directories extras/protoc.py #2204
+
 NEW IN WAF 2.0.13
 -----------------
 * Fix "broken revdeps" extra error message on certain build failures
