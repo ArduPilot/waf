@@ -239,7 +239,7 @@ def validate_cfg(self, kw):
 
 @conf
 def exec_cfg(self, kw):
-	r"""
+	"""
 	Executes ``pkg-config`` or other ``-config`` applications to collect configuration flags:
 
 	* if atleast_pkgconfig_version is given, check that pkg-config has the version n and return
@@ -250,9 +250,9 @@ def exec_cfg(self, kw):
 	:type atleast_pkgconfig_version: string
 	:param package: package name, for example *gtk+-2.0*
 	:type package: string
-	:param uselib_store: if the test is successful, define HAVE\_*name*. It is also used to define *conf.env.FLAGS_name* variables.
+	:param uselib_store: if the test is successful, define HAVE\\_*name*. It is also used to define *conf.env.FLAGS_name* variables.
 	:type uselib_store: string
-	:param modversion: if provided, return the version of the given module and define *name*\_VERSION
+	:param modversion: if provided, return the version of the given module and define *name*\\_VERSION
 	:type modversion: string
 	:param args: arguments to give to *package* when retrieving flags
 	:type args: list of string

@@ -305,7 +305,7 @@ def process_mocs(self):
 @feature('qt5')
 @after_method('apply_link')
 def apply_qt5(self):
-	r"""
+	"""
 	Adds MOC_FLAGS which may be necessary for moc::
 
 		def build(bld):
@@ -313,11 +313,11 @@ def apply_qt5(self):
 
 	The additional parameters are:
 
-	:param lang: list of translation files (\*.ts) to process
+	:param lang: list of translation files (\\*.ts) to process
 	:type lang: list of :py:class:`waflib.Node.Node` or string without the .ts extension
-	:param update: whether to process the C++ files to update the \*.ts files (use **waf --translate**)
+	:param update: whether to process the C++ files to update the \\*.ts files (use **waf --translate**)
 	:type update: bool
-	:param langname: if given, transform the \*.ts files into a .qrc files to include in the binary file
+	:param langname: if given, transform the \\*.ts files into a .qrc files to include in the binary file
 	:type langname: :py:class:`waflib.Node.Node` or string without the .qrc extension
 	"""
 	if getattr(self, 'lang', None):

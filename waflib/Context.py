@@ -607,13 +607,13 @@ class Context(ctx):
 		Logs.pprint(color, msg)
 
 	def load_special_tools(self, var, ban=[]):
-		r"""
+		"""
 		Loads third-party extensions modules for certain programming languages
 		by trying to list certain files in the extras/ directory. This method
 		is typically called once for a programming language group, see for
 		example :py:mod:`waflib.Tools.compiler_c`
 
-		:param var: glob expression, for example 'cxx\_\*.py'
+		:param var: glob expression, for example 'cxx\\_\\*.py'
 		:type var: string
 		:param ban: list of exact file names to exclude
 		:type ban: list of string
