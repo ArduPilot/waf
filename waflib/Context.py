@@ -607,7 +607,7 @@ class Context(ctx):
 		Logs.pprint(color, msg)
 
 	def load_special_tools(self, var, ban=[]):
-		"""
+		r"""
 		Loads third-party extensions modules for certain programming languages
 		by trying to list certain files in the extras/ directory. This method
 		is typically called once for a programming language group, see for

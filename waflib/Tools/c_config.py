@@ -239,7 +239,7 @@ def validate_cfg(self, kw):
 
 @conf
 def exec_cfg(self, kw):
-	"""
+	r"""
 	Executes ``pkg-config`` or other ``-config`` applications to collect configuration flags:
 
 	* if atleast_pkgconfig_version is given, check that pkg-config has the version n and return

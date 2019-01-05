@@ -727,7 +727,7 @@ def sequence_order(self):
 	self.bld.prev = self
 
 
-re_m4 = re.compile('@(\w+)@', re.M)
+re_m4 = re.compile(r'@(\w+)@', re.M)
 
 class subst_pc(Task.Task):
 	"""

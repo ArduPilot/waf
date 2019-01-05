@@ -1059,7 +1059,7 @@ def funex(c):
 	exec(c, dc)
 	return dc['f']
 
-re_cond = re.compile('(?P<var>\w+)|(?P<or>\|)|(?P<and>&)')
+re_cond = re.compile(r'(?P<var>\w+)|(?P<or>\|)|(?P<and>&)')
 re_novar = re.compile(r'^(SRC|TGT)\W+.*?$')
 reg_act = re.compile(r'(?P<backslash>\\)|(?P<dollar>\$\$)|(?P<subst>\$\{(?P<var>\w+)(?P<code>.*?)\})', re.M)
 def compile_fun_shell(line):

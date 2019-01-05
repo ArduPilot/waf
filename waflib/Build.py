@@ -104,7 +104,7 @@ class BuildContext(Context.Context):
 		"""Amount of jobs to run in parallel"""
 
 		self.targets = Options.options.targets
-		"""List of targets to build (default: \*)"""
+		"""List of targets to build (default: \\*)"""
 
 		self.keep = Options.options.keep
 		"""Whether the build should continue past errors"""

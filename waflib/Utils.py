@@ -736,7 +736,7 @@ def unversioned_sys_platform():
 	if s == 'cli' and os.name == 'nt':
 		# ironpython is only on windows as far as we know
 		return 'win32'
-	return re.split('\d+$', s)[0]
+	return re.split(r'\d+$', s)[0]
 
 def nada(*k, **kw):
 	"""

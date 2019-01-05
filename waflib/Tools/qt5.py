@@ -305,7 +305,7 @@ def process_mocs(self):
 @feature('qt5')
 @after_method('apply_link')
 def apply_qt5(self):
-	"""
+	r"""
 	Adds MOC_FLAGS which may be necessary for moc::
 
 		def build(bld):
@@ -762,7 +762,7 @@ def set_qt5_libs_to_check(self):
 		if self.environ.get('QT5_FORCE_STATIC'):
 			pat = self.env.cxxstlib_PATTERN
 		if Utils.unversioned_sys_platform() == 'darwin':
-			pat = "%s\.framework"
+			pat = r"%s\.framework"
 		re_qt = re.compile(pat%'Qt5?(?P<name>.*)'+'$')
 		for x in dirlst:
 			m = re_qt.match(x)

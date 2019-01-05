@@ -174,7 +174,7 @@ def createVCProjFile(lib_number, classes):
 """)
 
     for i in range(classes):
-        handle.write('  <File RelativePath=".\class_' + str(i) + '.cpp"/>\n')
+        handle.write(r'  <File RelativePath=".\class_' + str(i) + '.cpp"/>\n')
 
     handle.write("""
 	</Files>

@@ -282,7 +282,7 @@ def add_lang(self, node):
 @feature('qt4')
 @after_method('apply_link')
 def apply_qt4(self):
-	"""
+	r"""
 	Add MOC_FLAGS which may be necessary for moc::
 
 		def build(bld):

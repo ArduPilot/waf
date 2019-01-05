@@ -36,7 +36,7 @@ def scan(self):
 	names = []
 	return (nodes, names)
 
-re_o = re.compile("\.o$")
+re_o = re.compile(r"\.o$")
 re_splitter = re.compile(r'(?<!\\)\s+') # split by space, except when spaces are escaped
 
 def remove_makefile_rule_lhs(line):

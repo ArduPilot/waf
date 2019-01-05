@@ -108,7 +108,7 @@ def add_pylang(self, node):
 
 @feature('pyqt5')
 def apply_pyqt5(self):
-	"""
+	r"""
 	The additional parameters are:
 
 	:param lang: list of translation files (\*.ts) to process
