@@ -30,7 +30,7 @@ from waflib import Configure
 Configure.autoconfig = 1
 
 def sub_file(fname, lst):
-	with open(fname, 'rU') as f:
+	with open(fname, 'r') as f:
 		txt = f.read()
 
 	for (key, val) in lst:
@@ -160,7 +160,7 @@ def process_tokens(tokens):
 	body = ''.join(accu)
 	return body
 
-deco_re = re.compile('(def|class)\\s+(\w+)\\(.*')
+deco_re = re.compile('(def|class)\\s+(\\w+)\\(.*')
 def process_decorators(body):
 	lst = body.splitlines()
 	accu = []
@@ -315,7 +315,7 @@ def create_waf(self, *k, **kw):
 	tar.close()
 	z.close()
 
-	with open('waf-light', 'rU') as f:
+	with open('waf-light', 'r') as f:
 		code1 = f.read()
 
 	# now store the revision unique number in waf
