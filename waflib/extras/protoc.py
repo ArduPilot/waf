@@ -210,10 +210,12 @@ def process_protoc(self, node):
 		if javacn:
 			nodename += javacn + '.java'
 		else:
+			filenamebase = node.abspath()[node.abspath().rfind(os.sep)+1:node.abspath().rfind('.')].replace('_','')
+			filenamebase = filenamebase[:1].upper() + filenamebase[1:]
 			if self.env.PROTOC_MAJOR > '2' and node.abspath()[node.abspath().rfind(os.sep)+1:node.abspath().rfind('.')].title() in messages:
-				nodename += node.abspath()[node.abspath().rfind(os.sep)+1:node.abspath().rfind('.')].title().replace('_','') + 'OuterClass.java'
+				nodename += filenamebase + 'OuterClass.java'
 			else:
-				nodename += node.abspath()[node.abspath().rfind(os.sep)+1:node.abspath().rfind('.')].title().replace('_','') + '.java'
+				nodename += filenamebase + '.java'
 
 		java_node = node.parent.find_or_declare(nodename)
 		out_nodes.append(java_node)

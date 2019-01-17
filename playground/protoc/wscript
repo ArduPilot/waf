@@ -57,7 +57,7 @@ def build(bld):
 			features = 'javac protoc',
 			name = 'pbjava',
 			srcdir = 'inc/',
-			source   = ['inc/message_inc.proto', 'inc/message.proto'],
+			source   = ['inc/message_inc.proto', 'inc/message.proto', 'inc/msgCaseTest.proto' ],
 			use = 'PROTOBUF',
 			protoc_includes = ['inc'])
 
