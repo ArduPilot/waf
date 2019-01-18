@@ -2,11 +2,6 @@
 
 import os, subprocess, shutil, random, optparse
 
-try:
-	xrange     # Python 2
-except NameError:  # Python 3
-	xrange = range
-
 comp = {
 	'bz2': 'cjf',
 	'xz' : 'cJf',
@@ -48,20 +43,20 @@ def gen(lst, options):
 	LEN = len(lst)
 
 	POP = 3*LEN + 1
-	popul = [range(LEN) for x in xrange(POP)]
-	fitn = [0 for x in xrange(POP)]
+	popul = [range(LEN) for x in range(POP)]
+	fitn = [0 for x in range(POP)]
 
 	def rnd():
 		return random.randint(0, LEN -1)
 
 	def mutate():
-		for x in xrange(LEN):
+		for x in range(LEN):
 			# rotate the previous element by one
 			v = popul[x+LEN] = popul[x+LEN - 1]
 			a = v.pop(0)
 			v.append(a)
 
-		for x in xrange(LEN):
+		for x in range(LEN):
 			# swap elements
 			a = rnd()
 			b = rnd()
@@ -71,7 +66,7 @@ def gen(lst, options):
 			v[a] = v[b]
 			v[b] = c
 
-		for x in xrange(LEN):
+		for x in range(LEN):
 			# get one element out, add at the end
 			v = popul[x+2*LEN]
 
@@ -84,7 +79,7 @@ def gen(lst, options):
 
 		best = opti_ref
 		pos = -1
-		for x in xrange(len(popul)):
+		for x in range(len(popul)):
 			v = popul[x]
 			arr = [lst[a] for a in v]
 			tmp = '%s %s' % (cmd, ' '.join(arr))
@@ -104,14 +99,14 @@ def gen(lst, options):
 			assert (sum(popul[x]) == sum(range(LEN)))
 
 		#print pos
-		for x in xrange(len(popul)):
+		for x in range(len(popul)):
 			if x == pos:
 				continue
 			popul[x] = popul[pos][:]
 			assert(len(popul[x]) == LEN)
 		return best
 
-	for i in xrange(10000):
+	for i in range(10000):
 		mutate()
 		print(evil())
 
