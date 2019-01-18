@@ -2,11 +2,6 @@
 
 import os, subprocess, shutil, random, optparse
 
-try:
-	xrange     # Python 2
-except NameError:  # Python 3
-	xrange = range
-
 comp = {
 	'bz2': 'cjf',
 	'xz' : 'cJf',
