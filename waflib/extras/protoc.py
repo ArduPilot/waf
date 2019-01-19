@@ -169,7 +169,7 @@ def process_protoc(self, node):
 		out_nodes.append(py_node)
 		protoc_flags.append('--python_out=%s' % node.parent.get_bld().bldpath())
 
-	if 'javac' in self.features:
+	if 'javac' in self.features and node.exists():
 		pkgname, javapkg, javacn, nodename = None, None, None, None
 		messages = []
 
@@ -225,7 +225,7 @@ def process_protoc(self, node):
 		if not node.parent.get_bld() in self.javac_task.srcdir:
 			self.javac_task.srcdir.append(node.parent.get_bld())
 
-	if not out_nodes:
+	if not out_nodes and node.exists():
 		raise Errors.WafError('Feature %r not supported by protoc extra' % self.features)
 
 	tsk = self.create_task('protoc', node, out_nodes)
