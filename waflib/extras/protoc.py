@@ -6,7 +6,7 @@
 import re, os
 from waflib.Task import Task
 from waflib.TaskGen import extension
-from waflib import Errors, Context
+from waflib import Errors, Context, Logs
 
 """
 A simple tool to integrate protocol buffers into your build system.
@@ -169,64 +169,12 @@ def process_protoc(self, node):
 		out_nodes.append(py_node)
 		protoc_flags.append('--python_out=%s' % node.parent.get_bld().bldpath())
 
-	if 'javac' in self.features and node.exists():
-		pkgname, javapkg, javacn, nodename = None, None, None, None
-		messages = []
-
-		# .java file name is done with some rules depending on .proto file content:
-		#   -) package is either derived from option java_package if present
-		#      or from package directive
-		#   -) file name is either derived from option java_outer_classname if present
-		#      or the .proto file is converted to camelcase. If a message
-		#      is named the same then the behaviour depends on protoc version
-		#
-		# See also: https://developers.google.com/protocol-buffers/docs/reference/java-generated#invocation
-
-		code = node.read().splitlines()
-		for line in code:
-			m = re.search(r'^package\s+(.*);', line)
-			if m:
-				pkgname = m.groups()[0]
-			m = re.search(r'^option\s+(\S*)\s*=\s*"(\S*)";', line)
-			if m:
-				optname = m.groups()[0]
-				if optname == 'java_package':
-					javapkg = m.groups()[1]
-				elif optname == 'java_outer_classname':
-					javacn = m.groups()[1]
-			if self.env.PROTOC_MAJOR > '2':
-				m = re.search(r'^message\s+(\w*)\s*{*', line)
-				if m:
-					messages.append(m.groups()[0])
-
-		if javapkg:
-			nodename = javapkg
-		elif pkgname:
-			nodename = pkgname
-		else:
-			raise Errors.WafError('Cannot derive java name from protoc file')
-
-		nodename = nodename.replace('.',os.sep) + os.sep
-		if javacn:
-			nodename += javacn + '.java'
-		else:
-			filenamebase = node.abspath()[node.abspath().rfind(os.sep)+1:node.abspath().rfind('.')].replace('_','')
-			filenamebase = filenamebase[:1].upper() + filenamebase[1:]
-			if self.env.PROTOC_MAJOR > '2' and node.abspath()[node.abspath().rfind(os.sep)+1:node.abspath().rfind('.')].title() in messages:
-				nodename += filenamebase + 'OuterClass.java'
-			else:
-				nodename += filenamebase + '.java'
-
-		java_node = node.parent.find_or_declare(nodename)
-		out_nodes.append(java_node)
-		protoc_flags.append('--java_out=%s' % node.parent.get_bld().bldpath())
-
+	if 'javac' in self.features:
 		# Make javac get also pick java code generated in build
 		if not node.parent.get_bld() in self.javac_task.srcdir:
 			self.javac_task.srcdir.append(node.parent.get_bld())
 
-	if not out_nodes and node.exists():
-		raise Errors.WafError('Feature %r not supported by protoc extra' % self.features)
+		protoc_flags.append('--java_out=%s' % node.parent.get_bld().bldpath())
 
 	tsk = self.create_task('protoc', node, out_nodes)
 	tsk.env.append_value('PROTOC_FLAGS', protoc_flags)
