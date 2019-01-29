@@ -216,7 +216,10 @@ def parse_options():
 	ctx = Context.create_context('options')
 	ctx.execute()
 	if not Options.commands:
-		Options.commands.append(default_cmd)
+		if isinstance(default_cmd, list):
+			Options.commands.extend(default_cmd)
+		else:
+			Options.commands.append(default_cmd)
 	if Options.options.whelp:
 		ctx.parser.print_help()
 		sys.exit(0)
