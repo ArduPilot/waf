@@ -360,7 +360,7 @@ class jar_create(JTask):
 				return Task.ASK_LATER
 		if not self.inputs:
 			try:
-				self.inputs = [x for x in self.basedir.ant_glob(JAR_RE, remove=False) if id(x) != id(self.outputs[0])]
+				self.inputs = [x for x in self.basedir.ant_glob(JAR_RE, remove=False, quiet=True) if id(x) != id(self.outputs[0])]
 			except Exception:
 				raise Errors.WafError('Could not find the basedir %r for %r' % (self.basedir, self))
 		return super(jar_create, self).runnable_status()
@@ -394,14 +394,14 @@ class javac(JTask):
 			self.inputs  = []
 			for x in self.srcdir:
 				if x.exists():
-					self.inputs.extend(x.ant_glob(SOURCE_RE, remove=False))
+					self.inputs.extend(x.ant_glob(SOURCE_RE, remove=False, quiet=True))
 		return super(javac, self).runnable_status()
 
 	def post_run(self):
 		"""
 		List class files created
 		"""
-		for node in self.generator.outdir.ant_glob('**/*.class'):
+		for node in self.generator.outdir.ant_glob('**/*.class', quiet=True):
 			self.generator.bld.node_sigs[node] = self.uid()
 		self.generator.bld.task_sigs[self.uid()] = self.cache_sig
 
@@ -453,7 +453,7 @@ class javadoc(Task.Task):
 		self.generator.bld.cmd_and_log(lst, cwd=wd, env=env.env or None, quiet=0)
 
 	def post_run(self):
-		nodes = self.generator.javadoc_output.ant_glob('**')
+		nodes = self.generator.javadoc_output.ant_glob('**', quiet=True)
 		for node in nodes:
 			self.generator.bld.node_sigs[node] = self.uid()
 		self.generator.bld.task_sigs[self.uid()] = self.cache_sig
