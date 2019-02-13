@@ -50,7 +50,7 @@ def find_cuda_libs(self):
 	_includes = node and node.abspath() or ''
 
 	_libpath = []
-	for x in ('lib64', 'lib'):
+	for x in ('lib64', 'lib64/stubs', 'lib', 'lib/stubs'):
 		try:
 			_libpath.append(d.find_node(x).abspath())
 		except:
