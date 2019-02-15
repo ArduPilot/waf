@@ -318,23 +318,29 @@ class Task(evil):
 
 		# workaround for command line length limit:
 		# http://support.microsoft.com/kb/830473
-		if self.should_split(cmd):
-			cmd, args = self.split_argfile(cmd)
-			try:
-				(fd, tmp) = tempfile.mkstemp()
-				os.write(fd, '\r\n'.join(args[1:]).encode())
-				os.close(fd)
-				if Logs.verbose:
-					Logs.debug('argfile: @%r -> %r', tmp, args)
-				return self.generator.bld.exec_command(cmd + args[:1] + ['@' + tmp], **kw)
-			finally:
+		if not isinstance(cmd, str):
+			# Calculate commandline length:
+			cmd_bytes = sum([len(arg) for arg in cmd] + len(cmd) -1)
+			# Shunt arguments to a temporary file if the command is
+			# going to be too long.
+			if (cmd_bytes >= 8192 if Utils.is_win32 else cmd_bytes > 200000):
+				cmd, args = self.split_argfile(cmd)
 				try:
-					os.remove(tmp)
-				except OSError:
-					# anti-virus and indexers can keep files open -_-
-					pass
-		else:
-			return self.generator.bld.exec_command(cmd, **kw)
+					(fd, tmp) = tempfile.mkstemp()
+					os.write(fd, '\r\n'.join(args).encode())
+					os.close(fd)
+					if Logs.verbose:
+						Logs.debug('argfile: @%r -> %r', tmp, args)
+					return self.generator.bld.exec_command(cmd + ['@' + tmp], **kw)
+				finally:
+					try:
+						os.remove(tmp)
+					except OSError:
+						# anti-virus and indexers can keep files open -_-
+						pass
+		# If this line is hit then the command can be passed down stream
+		# directly.
+		return self.generator.bld.exec_command(cmd, **kw)
 
 	def process(self):
 		"""
