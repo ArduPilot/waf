@@ -32,6 +32,8 @@ class rc_parser(c_preproc.c_parser):
 	"""
 	Calculates dependencies in .rc files
 	"""
+	allow_argsfile = False
+
 	def filter_comments(self, node):
 		"""
 		Overrides :py:meth:`waflib.Tools.c_preproc.c_parser.filter_comments`
