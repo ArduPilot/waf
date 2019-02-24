@@ -323,7 +323,7 @@ class Task(evil):
 		# http://support.microsoft.com/kb/830473
 		if not isinstance(cmd, str):
 			# Calculate commandline length:
-			cmd_bytes = sum([len(arg) for arg in cmd] + len(cmd) -1)
+			cmd_bytes = sum([len(arg) for arg in cmd]) + len(cmd) -1
 			# Shunt arguments to a temporary file if the command is
 			# going to be too long.
 			if self.allow_argsfile and (cmd_bytes >= 8192 if Utils.is_win32 else cmd_bytes > 200000):
