@@ -490,7 +490,9 @@ def split_path_msys(path):
 if sys.platform == 'cygwin':
 	split_path = split_path_cygwin
 elif is_win32:
-	if os.environ.get('MSYSTEM'):
+	# Consider this an MSYSTEM environment if $MSYSTEM is set and python
+	# reports is executable from a unix like path on a windows host.
+	if os.environ.get('MSYSTEM') and sys.executable.startswith('/'):
 		split_path = split_path_msys
 	else:
 		split_path = split_path_win32
