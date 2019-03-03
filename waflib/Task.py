@@ -150,9 +150,6 @@ class Task(evil):
 	always_run = False
 	"""Specify whether task instances must always be executed or not (class attribute)"""
 
-	allow_argsfile = True
-	"""Specify whether task instances support the @argsfile shortcut for sunting arguments to a file (class attribute)"""
-
 	shell = False
 	"""Execute the command with the shell (class attribute)"""
 
@@ -326,7 +323,7 @@ class Task(evil):
 			cmd_bytes = sum([len(arg) for arg in cmd]) + len(cmd) -1
 			# Shunt arguments to a temporary file if the command is
 			# going to be too long.
-			if self.allow_argsfile and (cmd_bytes >= 8192 if Utils.is_win32 else cmd_bytes > 200000):
+			if (cmd_bytes >= 8192 if Utils.is_win32 else cmd_bytes > 200000) and getattr(self, 'allow_argsfile', True):
 				cmd, args = self.split_argfile(cmd)
 				try:
 					(fd, tmp) = tempfile.mkstemp()

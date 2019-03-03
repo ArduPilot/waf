@@ -1,3 +1,15 @@
+NEW IN WAF 2.0.15
+-----------------
+* Fix Python path detection under Git-Bash #2217
+* Provide an option to disable args files #2216
+* Improve command line length calculation for args files #2214
+* Add libs/stubs to Cuda library path #2213
+* Suppress ant_glob java warnings #2212
+* Support multiple 'default_cmd' #2211
+* Warn when buildcopy is used without any files to copy #2210
+* Protobuf examples enhancements #2208 #2209
+* Fix all DeprecationWarning: invalid escape sequence #2207
+
 NEW IN WAF 2.0.14
 -----------------
 * Support Fortran 2008 submodules #2205
