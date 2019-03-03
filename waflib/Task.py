@@ -316,14 +316,16 @@ class Task(evil):
 		if hasattr(self, 'stderr'):
 			kw['stderr'] = self.stderr
 
-		# workaround for command line length limit:
-		# http://support.microsoft.com/kb/830473
 		if not isinstance(cmd, str):
-			# Calculate commandline length:
-			cmd_bytes = sum([len(arg) for arg in cmd]) + len(cmd) -1
-			# Shunt arguments to a temporary file if the command is
-			# going to be too long.
-			if (cmd_bytes >= 8192 if Utils.is_win32 else cmd_bytes > 200000) and getattr(self, 'allow_argsfile', True):
+			if Utils.is_win32:
+				# win32 compares the resulting length http://support.microsoft.com/kb/830473
+				too_long = sum([len(arg) for arg in cmd]) + len(cmd) > 8192
+			else:
+				# non-win32 counts the amount of arguments (200k)
+				too_long = len(cmd) > 200000
+
+			if too_long and getattr(self, 'allow_argsfile', True):
+				# Shunt arguments to a temporary file if the command is too long.
 				cmd, args = self.split_argfile(cmd)
 				try:
 					(fd, tmp) = tempfile.mkstemp()
@@ -338,8 +340,6 @@ class Task(evil):
 					except OSError:
 						# anti-virus and indexers can keep files open -_-
 						pass
-		# If this line is hit then the command can be passed down stream
-		# directly.
 		return self.generator.bld.exec_command(cmd, **kw)
 
 	def process(self):
