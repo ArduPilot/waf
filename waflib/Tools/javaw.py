@@ -209,7 +209,7 @@ def java_use_rec(self, name, **kw):
 	else:
 		y.post()
 		# Add generated JAR name for CLASSPATH. Task ordering (set_run_after)
-		# is already guaranted by ordering done between the single tasks
+		# is already guaranteed by ordering done between the single tasks
 		if hasattr(y, 'jar_task'):
 			self.use_lst.append(y.jar_task.outputs[0].abspath())
 

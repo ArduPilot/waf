@@ -111,7 +111,7 @@ def apply_incpaths(self):
 		tg = bld(features='includes', includes='.')
 
 	The folders only need to be relative to the current directory, the equivalent build directory is
-	added automatically (for headers created in the build directory). This enable using a build directory
+	added automatically (for headers created in the build directory). This enables using a build directory
 	or not (``top == out``).
 
 	This method will add a list of nodes read by :py:func:`waflib.Tools.ccroot.to_incnodes` in ``tg.env.INCPATHS``,
