@@ -11,7 +11,7 @@ To add a tool that does not exist in the folder compat15, pass an absolute path:
 
 from __future__ import with_statement
 
-VERSION="2.0.14"
+VERSION="2.0.15"
 APPNAME='waf'
 REVISION=''
 
