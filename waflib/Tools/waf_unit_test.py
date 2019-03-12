@@ -214,7 +214,7 @@ class utest(Task.Task):
 				'cmd': cmd
 			}
 			script_file = self.inputs[0].abspath() + '_run.py'
-			Utils.writef(script_file, script_code)
+			Utils.writef(script_file, script_code, encoding='utf-8')
 			os.chmod(script_file, Utils.O755)
 			if Logs.verbose > 1:
 				Logs.info('Test debug file written as %r' % script_file)
