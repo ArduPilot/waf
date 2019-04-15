@@ -604,6 +604,12 @@ def h_list(lst):
 	"""
 	return md5(repr(lst).encode()).digest()
 
+if sys.hexversion < 0x3000000:
+	def h_list_python2(lst):
+		return md5(repr(lst)).digest()
+	h_list_python2.__doc__ = h_list.__doc__
+	h_list = h_list_python2
+
 def h_fun(fun):
 	"""
 	Hash functions
