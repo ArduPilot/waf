@@ -337,11 +337,16 @@ class Parallel(object):
 
 		if hasattr(tsk, 'semaphore'):
 			sem = tsk.semaphore
-			sem.release(tsk)
-			while sem.waiting and not sem.is_locked():
-				# take a frozen task, make it ready to run
-				x = sem.waiting.pop()
-				self._add_task(x)
+			try:
+				sem.release(tsk)
+			except KeyError:
+				# TODO
+				pass
+			else:
+				while sem.waiting and not sem.is_locked():
+					# take a frozen task, make it ready to run
+					x = sem.waiting.pop()
+					self._add_task(x)
 
 	def get_out(self):
 		"""
