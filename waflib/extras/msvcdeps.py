@@ -64,14 +64,17 @@ def path_to_node(base_node, path, cached_nodes):
 	else:
 		# Not hashable, assume it is a list and join into a string
 		node_lookup_key = (base_node, os.path.sep.join(path))
+
 	try:
-		lock.acquire()
 		node = cached_nodes[node_lookup_key]
 	except KeyError:
-		node = base_node.find_resource(path)
-		cached_nodes[node_lookup_key] = node
-	finally:
-		lock.release()
+		# retry with lock on cache miss
+		with lock:
+			try:
+				node = cached_nodes[node_lookup_key]
+			except KeyError:
+				node = cached_nodes[node_lookup_key] = base_node.find_resource(path)
+
 	return node
 
 def post_run(self):
