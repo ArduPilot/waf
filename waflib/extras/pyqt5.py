@@ -30,7 +30,7 @@ Load the "pyqt5" tool.
 
 Add into the sources list also the qrc resources files or ui5
 definition files and they will be translated into python code
-with the system tools (PyQt5, pyside2, PyQt4 are searched in this
+with the system tools (PyQt5, PySide2, PyQt4 are searched in this
 order) and then compiled
 """
 
@@ -207,7 +207,7 @@ def configure(self):
 @conf
 def find_pyqt5_binaries(self):
 	"""
-	Detects PyQt5 or pyside2 programs such as pyuic5/pyside2-uic, pyrcc5/pyside2-rcc
+	Detects PyQt5 or PySide2 programs such as pyuic5/pyside2-uic, pyrcc5/pyside2-rcc
 	"""
 	env = self.env
 
@@ -242,5 +242,5 @@ def options(opt):
 	"""
 	pyqt5opt=opt.add_option_group("Python QT5 Options")
 	pyqt5opt.add_option('--pyqt5-pyqt5', action='store_true', default=False, dest='want_pyqt5', help='use PyQt5 bindings as python QT5 bindings (default PyQt5 is searched first, PySide2 after, PyQt4 last)')
-	pyqt5opt.add_option('--pyqt5-pyside2', action='store_true', default=False, dest='want_pyside2', help='use pyside2 bindings as python QT5 bindings (default PyQt5 is searched first, PySide2 after, PyQt4 last)')
+	pyqt5opt.add_option('--pyqt5-pyside2', action='store_true', default=False, dest='want_pyside2', help='use PySide2 bindings as python QT5 bindings (default PyQt5 is searched first, PySide2 after, PyQt4 last)')
 	pyqt5opt.add_option('--pyqt5-pyqt4', action='store_true', default=False, dest='want_pyqt4', help='use PyQt4 bindings as python QT5 bindings (default PyQt5 is searched first, PySide2 after, PyQt4 last)')
