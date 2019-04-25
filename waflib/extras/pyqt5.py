@@ -231,7 +231,7 @@ def find_pyqt5_binaries(self):
 	if not env.QT_PYUIC:
 		self.fatal('cannot find the uic compiler for python for qt5')
 
-	if not env.QT_PYUIC:
+	if not env.QT_PYRCC:
 		self.fatal('cannot find the rcc compiler for python for qt5')
 
 	self.find_program(['lrelease-qt5', 'lrelease'], var='QT_LRELEASE')
