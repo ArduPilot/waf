@@ -143,9 +143,12 @@ def test(ctx):
 	create('d.TXT')
 	nd2 = bld.srcnode.make_node('d.TXT')
 	nd2.write("test")
+	nd3 = bld.srcnode.make_node('e.e+(e).txt')
+	nd3.write("test")
 
-	tt("ant_glob ->", len(bld.srcnode.ant_glob('*.txt', flat=False)), 1)
-	tt("ant_glob (icase) ->", len(bld.srcnode.ant_glob('*.txt', flat=False, ignorecase=True)), 2)
+	tt("ant_glob ->", len(bld.srcnode.ant_glob('*.txt', flat=False)), 2)
+	tt("ant_glob (icase) ->", len(bld.srcnode.ant_glob('*.txt', flat=False, ignorecase=True)), 3)
+	tt("ant_glob (special) ->", len(bld.srcnode.ant_glob('e.e+(e).txt', flat=False)), 1)
 	#print("ant_glob src ->", bld.srcnode.ant_glob('*.txt'))
 
 	def abspath(self):
