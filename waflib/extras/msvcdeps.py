@@ -50,17 +50,19 @@ def apply_msvcdeps_flags(taskgen):
 		if taskgen.env.get_flat(flag).find(PREPROCESSOR_FLAG) < 0:
 			taskgen.env.append_value(flag, PREPROCESSOR_FLAG)
 
-	# Figure out what casing conventions the user's shell used when
-	# launching Waf
-	(drive, _) = os.path.splitdrive(taskgen.bld.srcnode.abspath())
-	taskgen.msvcdeps_drive_lowercase = drive == drive.lower()
-
 def path_to_node(base_node, path, cached_nodes):
 	'''
 	Take the base node and the path and return a node
 	Results are cached because searching the node tree is expensive
 	The following code is executed by threads, it is not safe, so a lock is needed...
 	'''
+	# normalize the path because ant_glob() does not understand
+	# parent path components (..)
+	path = os.path.normpath(path)
+
+	# normalize the path case to increase likelihood of a cache hit
+	path = os.path.normcase(path)
+
 	node_lookup_key = (base_node, path)
 
 	try:
@@ -71,7 +73,8 @@ def path_to_node(base_node, path, cached_nodes):
 			try:
 				node = cached_nodes[node_lookup_key]
 			except KeyError:
-				node = cached_nodes[node_lookup_key] = base_node.find_resource(path)
+				node_list = base_node.ant_glob([path], ignorecase=True, remove=False, quiet=True)
+				node = cached_nodes[node_lookup_key] = node_list[0] if node_list else None
 
 	return node
 
@@ -87,11 +90,6 @@ def post_run(self):
 	unresolved_names = []
 	resolved_nodes = []
 
-	lowercase = self.generator.msvcdeps_drive_lowercase
-	correct_case_path = bld.path.abspath()
-	correct_case_path_len = len(correct_case_path)
-	correct_case_path_norm = os.path.normcase(correct_case_path)
-
 	# Dynamically bind to the cache
 	try:
 		cached_nodes = bld.cached_nodes
@@ -101,18 +99,6 @@ def post_run(self):
 	for path in self.msvcdeps_paths:
 		node = None
 		if os.path.isabs(path):
-			# Force drive letter to match conventions of main source tree
-			drive, tail = os.path.splitdrive(path)
-
-			if os.path.normcase(path[:correct_case_path_len]) == correct_case_path_norm:
-				# Path is in the sandbox, force it to be correct.  MSVC sometimes returns a lowercase path.
-				path = correct_case_path + path[correct_case_path_len:]
-			else:
-				# Check the drive letter
-				if lowercase and (drive != drive.lower()):
-					path = drive.lower() + tail
-				elif (not lowercase) and (drive != drive.upper()):
-					path = drive.upper() + tail
 			node = path_to_node(bld.root, path, cached_nodes)
 		else:
 			# when calling find_resource, make sure the path does not begin with '..'
