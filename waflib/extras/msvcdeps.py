@@ -56,14 +56,12 @@ def apply_msvcdeps_flags(taskgen):
 	taskgen.msvcdeps_drive_lowercase = drive == drive.lower()
 
 def path_to_node(base_node, path, cached_nodes):
-	# Take the base node and the path and return a node
-	# Results are cached because searching the node tree is expensive
-	# The following code is executed by threads, it is not safe, so a lock is needed...
-	if getattr(path, '__hash__'):
-		node_lookup_key = (base_node, path)
-	else:
-		# Not hashable, assume it is a list and join into a string
-		node_lookup_key = (base_node, os.path.sep.join(path))
+	'''
+	Take the base node and the path and return a node
+	Results are cached because searching the node tree is expensive
+	The following code is executed by threads, it is not safe, so a lock is needed...
+	'''
+	node_lookup_key = (base_node, path)
 
 	try:
 		node = cached_nodes[node_lookup_key]
@@ -117,12 +115,13 @@ def post_run(self):
 					path = drive.upper() + tail
 			node = path_to_node(bld.root, path, cached_nodes)
 		else:
+			# when calling find_resource, make sure the path does not begin with '..'
 			base_node = bld.bldnode
-			# when calling find_resource, make sure the path does not begin by '..'
 			path = [k for k in Utils.split_path(path) if k and k != '.']
 			while path[0] == '..':
-				path = path[1:]
+				path.pop(0)
 				base_node = base_node.parent
+			path = os.sep.join(path)
 
 			node = path_to_node(base_node, path, cached_nodes)
 
