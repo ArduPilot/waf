@@ -175,6 +175,7 @@ def process_protoc(self, node):
 			self.javac_task.srcdir.append(node.parent.get_bld())
 
 		protoc_flags.append('--java_out=%s' % node.parent.get_bld().bldpath())
+		node.parent.get_bld().mkdir()
 
 	tsk = self.create_task('protoc', node, out_nodes)
 	tsk.env.append_value('PROTOC_FLAGS', protoc_flags)
