@@ -238,6 +238,7 @@ def use_javac_files(self):
 			if hasattr(y, 'jar_task'):
 				self.use_lst.append(y.jar_task.outputs[0].abspath())
 				self.javac_task.set_run_after(y.jar_task)
+				self.javac_task.dep_nodes.extend(y.jar_task.outputs)
 			else:
 				for tsk in y.tasks:
 					self.javac_task.set_run_after(tsk)
