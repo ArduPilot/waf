@@ -212,6 +212,8 @@ def java_use_rec(self, name, **kw):
 		# is already guaranteed by ordering done between the single tasks
 		if hasattr(y, 'jar_task'):
 			self.use_lst.append(y.jar_task.outputs[0].abspath())
+		else:
+			self.use_lst.append(y.outdir.abspath())
 
 	for x in self.to_list(getattr(y, 'use', [])):
 		self.java_use_rec(x)
@@ -240,6 +242,7 @@ def use_javac_files(self):
 				self.javac_task.set_run_after(y.jar_task)
 				self.javac_task.dep_nodes.extend(y.jar_task.outputs)
 			else:
+				self.use_lst.append(y.outdir.abspath())
 				for tsk in y.tasks:
 					self.javac_task.set_run_after(tsk)
 
