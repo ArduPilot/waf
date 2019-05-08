@@ -245,6 +245,7 @@ def use_javac_files(self):
 				self.use_lst.append(y.outdir.abspath())
 				for tsk in y.tasks:
 					self.javac_task.set_run_after(tsk)
+				self.javac_task.dep_nodes.extend([x for x in y.outdir.ant_glob(JAR_RE, remove=False, quiet=True)])
 
 		# If recurse use scan is enabled recursively add use attribute for each used one
 		if getattr(self, 'recurse_use', False) or self.bld.env.RECURSE_JAVA:
