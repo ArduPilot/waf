@@ -63,6 +63,9 @@ def path_to_node(base_node, path, cached_nodes):
 	# normalize the path case to increase likelihood of a cache hit
 	path = os.path.normcase(path)
 
+	# ant_glob interprets [] and () characters, so those must be replaced
+	path = path.replace('[', '?').replace(']', '?').replace('(', '[(]').replace(')', '[)]')
+
 	node_lookup_key = (base_node, path)
 
 	try:
@@ -73,7 +76,7 @@ def path_to_node(base_node, path, cached_nodes):
 			try:
 				node = cached_nodes[node_lookup_key]
 			except KeyError:
-				node_list = base_node.ant_glob([path], ignorecase=True, remove=False, quiet=True)
+				node_list = base_node.ant_glob([path], ignorecase=True, remove=False, quiet=True, regex=False)
 				node = cached_nodes[node_lookup_key] = node_list[0] if node_list else None
 
 	return node

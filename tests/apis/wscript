@@ -148,7 +148,7 @@ def test(ctx):
 
 	tt("ant_glob ->", len(bld.srcnode.ant_glob('*.txt', flat=False)), 2)
 	tt("ant_glob (icase) ->", len(bld.srcnode.ant_glob('*.txt', flat=False, ignorecase=True)), 3)
-	tt("ant_glob (special) ->", len(bld.srcnode.ant_glob('e.e+(e).txt', flat=False)), 1)
+	tt("ant_glob (parentheses) ->", len(bld.srcnode.ant_glob('e.e+[(]e[)].txt', flat=False)), 1)
 	#print("ant_glob src ->", bld.srcnode.ant_glob('*.txt'))
 
 	def abspath(self):
