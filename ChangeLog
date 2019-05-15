@@ -1,3 +1,18 @@
+NEW IN WAF 2.0.16
+-----------------
+* Fix task semaphore errors on stateful tasks #2232
+* Fix encoding errors with UTF-8 paths on Python 2 #2230
+* Fix encoding errors in waf_unit_test #2220
+* Improve dependency between javac task and use-d generated jars nodes
+* Install pdb files with /debug:* flags #2224
+* Make javadoc detection optional #2225
+* Improve md5_tstamp documentation #2221
+* Add extras/color_msvc to colorizes MSVC outputs #2221
+* Fix symbol regex on mac-o binaries in extras/syms #2222
+* Maintain order of lines in doxyfile in extras/doxygen #2223
+* Improve extras/msvcdeps path handling
+* Add extras/clang_cross for cross-compilation using clang
+
 NEW IN WAF 2.0.15
 -----------------
 * Fix Python path detection under Git-Bash #2217
