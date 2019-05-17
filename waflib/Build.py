@@ -1164,7 +1164,11 @@ class inst(Task.Task):
 					return False
 
 		if not self.generator.bld.progress_bar:
-			Logs.info('+ install %s (from %s)', tgt, lbl)
+
+			c1 = Logs.colors.NORMAL
+			c2 = Logs.colors.BLUE
+
+			Logs.info('%s+ install %s%s%s (from %s)', c1, c2, tgt, c1, lbl)
 
 		# Give best attempt at making destination overwritable,
 		# like the 'install' utility used by 'make install' does.
