@@ -342,7 +342,13 @@ def check_python_headers(conf, features='pyembed pyext'):
 
 		if 'pyembed' in features:
 			for flags in all_flags:
-				conf.check_cfg(msg='Asking python-config for pyembed %r flags' % ' '.join(flags), path=env.PYTHON_CONFIG, package='', uselib_store='PYEMBED', args=flags)
+				# Python 3.8 has different flags for pyembed, needs --embed
+				embedflags = flags + ['--embed']
+				try:
+					conf.check_cfg(msg='Asking python-config for pyembed %r flags' % ' '.join(embedflags), path=env.PYTHON_CONFIG, package='', uselib_store='PYEMBED', args=embedflags)
+				except conf.errors.ConfigurationError:
+					# However Python < 3.8 doesn't accept --embed, so we need a fallback
+					conf.check_cfg(msg='Asking python-config for pyembed %r flags' % ' '.join(flags), path=env.PYTHON_CONFIG, package='', uselib_store='PYEMBED', args=flags)
 
 			try:
 				conf.test_pyembed(xx)
