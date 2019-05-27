@@ -1160,7 +1160,11 @@ class inst(Task.Task):
 				# same size and identical timestamps -> make no copy
 				if st1.st_mtime + 2 >= st2.st_mtime and st1.st_size == st2.st_size:
 					if not self.generator.bld.progress_bar:
-						Logs.info('- install %s (from %s)', tgt, lbl)
+
+						c1 = Logs.colors.NORMAL
+						c2 = Logs.colors.BLUE
+
+						Logs.info('%s- install %s%s%s (from %s)', c1, c2, tgt, c1, lbl)
 					return False
 
 		if not self.generator.bld.progress_bar:
