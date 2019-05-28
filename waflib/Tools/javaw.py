@@ -213,7 +213,10 @@ def java_use_rec(self, name, **kw):
 		if hasattr(y, 'jar_task'):
 			self.use_lst.append(y.jar_task.outputs[0].abspath())
 		else:
-			self.use_lst.append(y.outdir.abspath())
+			if hasattr(y,'outdir'):
+				self.use_lst.append(y.outdir.abspath())
+			else:
+				self.use_lst.append(y.path.get_bld().abspath())
 
 	for x in self.to_list(getattr(y, 'use', [])):
 		self.java_use_rec(x)
@@ -242,10 +245,14 @@ def use_javac_files(self):
 				self.javac_task.set_run_after(y.jar_task)
 				self.javac_task.dep_nodes.extend(y.jar_task.outputs)
 			else:
-				self.use_lst.append(y.outdir.abspath())
+				if hasattr(y, 'outdir'):
+					self.use_lst.append(y.outdir.abspath())
+					self.javac_task.dep_nodes.extend([x for x in y.outdir.ant_glob(JAR_RE, remove=False, quiet=True)])
+				else:
+					self.use_lst.append(y.path.get_bld().abspath())
+					self.javac_task.dep_nodes.extend([x for x in y.path.get_bld().ant_glob(JAR_RE, remove=False, quiet=True)])
 				for tsk in y.tasks:
 					self.javac_task.set_run_after(tsk)
-				self.javac_task.dep_nodes.extend([x for x in y.outdir.ant_glob(JAR_RE, remove=False, quiet=True)])
 
 		# If recurse use scan is enabled recursively add use attribute for each used one
 		if getattr(self, 'recurse_use', False) or self.bld.env.RECURSE_JAVA:
