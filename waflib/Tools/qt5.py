@@ -167,6 +167,10 @@ class qxx(Task.classes['cxx']):
 		node = self.inputs[0]
 		bld = self.generator.bld
 
+		# on uninstall this is unnecessary and may lead to errors if files needed are generated
+		if bld.cmd == 'uninstall':
+			return
+
 		try:
 			# compute the signature once to know if there is a moc file to create
 			self.signature()
