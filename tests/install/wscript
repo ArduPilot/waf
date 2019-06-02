@@ -11,7 +11,7 @@ def build(bld):
 
 @TaskGen.feature('ruler')
 @TaskGen.before('process_rule')
-def test(self):
+def test_helper(self):
 	if not self.bld.is_install or self.bld.is_install == Build.UNINSTALL:
 		while self.meths: # do not generate tasks: the target file may not be there
 			self.meths.pop()
