@@ -74,7 +74,7 @@ else:
 
 import os, sys, re
 from waflib.Tools import cxx
-from waflib import Task, Utils, Options, Errors, Context
+from waflib import Build, Task, Utils, Options, Errors, Context
 from waflib.TaskGen import feature, after_method, extension, before_method
 from waflib.Configure import conf
 from waflib import Logs
@@ -168,7 +168,7 @@ class qxx(Task.classes['cxx']):
 		bld = self.generator.bld
 
 		# skip on uninstall due to generated files
-		if bld.is_install < 0:
+		if bld.is_install == Build.UNINSTALL:
 			return
 
 		try:
