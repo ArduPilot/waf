@@ -1,3 +1,10 @@
+NEW IN WAF 2.0.17
+-----------------
+* Improve build performance on FreeBSD and Python3 #2241
+* Add Python 3.8 flag detection for building embedded interpreters #2239
+* Prevent Qt5 uninstallation errors when c++ files are generated
+* Improve installation/uninstallation colors
+
 NEW IN WAF 2.0.16
 -----------------
 * Fix task semaphore errors on stateful tasks #2232
