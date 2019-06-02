@@ -167,8 +167,8 @@ class qxx(Task.classes['cxx']):
 		node = self.inputs[0]
 		bld = self.generator.bld
 
-		# on uninstall this is unnecessary and may lead to errors if files needed are generated
-		if bld.cmd == 'uninstall':
+		# skip on uninstall due to generated files
+		if bld.is_install < 0:
 			return
 
 		try:
