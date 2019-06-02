@@ -235,23 +235,25 @@ def use_javac_files(self):
 	get = self.bld.get_tgen_by_name
 	for x in names:
 		try:
-			y = get(x)
+			tg = get(x)
 		except Errors.WafError:
 			self.uselib.append(x)
 		else:
-			y.post()
-			if hasattr(y, 'jar_task'):
-				self.use_lst.append(y.jar_task.outputs[0].abspath())
-				self.javac_task.set_run_after(y.jar_task)
-				self.javac_task.dep_nodes.extend(y.jar_task.outputs)
+			tg.post()
+			if hasattr(tg, 'jar_task'):
+				self.use_lst.append(tg.jar_task.outputs[0].abspath())
+				self.javac_task.set_run_after(tg.jar_task)
+				self.javac_task.dep_nodes.extend(tg.jar_task.outputs)
 			else:
-				if hasattr(y, 'outdir'):
-					self.use_lst.append(y.outdir.abspath())
-					self.javac_task.dep_nodes.extend([x for x in y.outdir.ant_glob(JAR_RE, remove=False, quiet=True)])
+				if hasattr(tg, 'outdir'):
+					base_node = tg.outdir.abspath()
 				else:
-					self.use_lst.append(y.path.get_bld().abspath())
-					self.javac_task.dep_nodes.extend([x for x in y.path.get_bld().ant_glob(JAR_RE, remove=False, quiet=True)])
-				for tsk in y.tasks:
+					base_node = tg.path.get_bld()
+
+				self.use_lst.append(base_node.abspath())
+				self.javac_task.dep_nodes.extend([x for x in base_node.ant_glob(JAR_RE, remove=False, quiet=True)])
+
+				for tsk in tg.tasks:
 					self.javac_task.set_run_after(tsk)
 
 		# If recurse use scan is enabled recursively add use attribute for each used one
