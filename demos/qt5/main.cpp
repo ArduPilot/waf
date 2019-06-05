@@ -4,12 +4,13 @@
 //#include <QString>
 //#include "mainwindow.h"
 #include "ui_but.h"
+#include "foo.h"
 
 int main(int argc, char **argv)
 {
     Q_INIT_RESOURCE(res);
     QApplication app(argc, argv);
-    QWidget window;
+    Foo window;
     Ui::Form ui;
     ui.setupUi(&window);
     window.show();
