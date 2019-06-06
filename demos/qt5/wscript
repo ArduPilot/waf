@@ -36,7 +36,8 @@ def build(bld):
 	# Example of integration of Qt5 Unit tests using Qt5Test using waf_unit_test
 	bld(
 		features = 'qt5 cxx cxxprogram test',
-		use      = 'QT5CORE QT5WIDGETS QT5TEST',
+		use      = 'QT5CORE QT5GUI QT5WIDGETS QT5TEST',
+		defines  = 'QT_WIDGETS_LIB',
 		source   = 'foo.cpp testqt5.cpp',
 		moc      = 'foo.h',
 		target   = 'footest',

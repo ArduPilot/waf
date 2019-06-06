@@ -3,6 +3,7 @@
 
 #include "foo.h"
 #include <QtTest/QtTest>
+#include <qtest_widgets.h>
 
 class TestQt5Test: public QObject {
 	Q_OBJECT
@@ -16,7 +17,7 @@ class TestQt5Test: public QObject {
 // Test of the UI by simulating a button click and button label reading
 void TestQt5Test::testGui() {
 	QCOMPARE(myFoo.m_button->text(), QString("Foo Button"));
-	QTest::mouseClick(myFoo.m_button,Qt::LeftButton,Qt::NoModifier,QPoint(5,5),0);
+	QTest::mouseClick(myFoo.m_button, Qt::LeftButton,Qt::NoModifier, QPoint(5,5), 0);
 	QCOMPARE(myFoo.m_button->text(), QString("Button Foo"));
 }
 
