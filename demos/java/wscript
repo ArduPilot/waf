@@ -49,5 +49,5 @@ def build(bld):
 		javadoc_output	= 'javadoc',
 	)
 
-	bld.recurse('animals cats')
+	bld.recurse('animals cats bengala')
 
