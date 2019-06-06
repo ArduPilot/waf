@@ -3,7 +3,6 @@
 
 #include "foo.h"
 #include <QtTest/QtTest>
-#include <qtest_widgets.h>
 
 class TestQt5Test: public QObject {
 	Q_OBJECT
