@@ -50,3 +50,21 @@ def build(bld):
 		source   = 'test.c',
 		target   = 'test')
 
+	# Install files keeping their directory structure (default: relative_trick=True)
+	#
+	# This will create two files:
+	#   * lib/python2.7/site-packages/nested_scripts/bar/nested_bar.py
+	#   * lib/python2.7/site-packages/nested_scripts/foo/nested_foo.py
+	bld(features='py',
+		source=bld.path.ant_glob('nested_scripts/**/*.py'),
+		install_from='.')
+
+	# Install files flatting the directory structure (relative_trick=False)
+	#
+	# This will create two files:
+	#   * lib/python2.7/site-packages/nested_bar.py
+	#   * lib/python2.7/site-packages/nested_foo.py
+	bld(features='py',
+		source=bld.path.ant_glob('nested_scripts/**/*.py'),
+		relative_trick=False,
+		install_from='.')
