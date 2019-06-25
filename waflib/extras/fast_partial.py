@@ -400,12 +400,17 @@ def is_stale(self):
 		Logs.debug('rev_use: must post %r because this is a clean build')
 		return True
 
-	# 3. check if the configuration changed
-	if os.stat(self.bld.bldnode.find_node('c4che/build.config.py').abspath()).st_mtime > dbstat:
+	# 3.a check if the configuration exists
+	cache_node = self.bld.bldnode.find_node('c4che/build.config.py')
+	if not cache_node:
+		return True
+
+	# 3.b check if the configuration changed
+	if os.stat(cache_node.abspath()).st_mtime > dbstat:
 		Logs.debug('rev_use: must post %r because the configuration has changed', self.name)
 		return True
 
-	# 3.a any tstamp data?
+	# 3.c any tstamp data?
 	try:
 		f_deps = self.bld.f_deps
 	except AttributeError:
