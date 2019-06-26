@@ -15,7 +15,7 @@ mult10:
 	pushq    %rbp
 	movq     %rsp,%rbp
 
-	movl val,%eax
+	movabs val,%eax
 	imull %edi,%eax
 
 	popq     %rbp
