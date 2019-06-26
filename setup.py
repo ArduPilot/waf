@@ -14,6 +14,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://gitlab.com/ita1024/waf",
     packages=['waflib', 'waflib/Tools', 'waflib/extras'],
+    scripts=['waf-light'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
