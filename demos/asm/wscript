@@ -18,6 +18,7 @@ def build(bld):
 		source   = 'main.c test.S',
 		target   = 'asmtest',
 		defines  = 'foo=12',
+		asflags  = '-Os',
 		includes = '.')
 
 	def disp(ctx):
