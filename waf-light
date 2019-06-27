@@ -130,15 +130,6 @@ def test(dir):
 	except OSError:
 		pass
 
-def test_syspath():
-	for dir in sys.path:
-		try:
-			os.stat(join(dir, 'waflib'))
-			return True
-		except OSError:
-			pass
-	return False
-
 def find_lib():
 	src = os.path.abspath(inspect.getfile(inspect.getmodule(err)))
 	base, name = os.path.split(src)
@@ -151,7 +142,9 @@ def find_lib():
 	if name.endswith('waf-light'):
 		w = test(base)
 		if w: return w
-		if test_syspath(): return None
+		for dir in sys.path:
+			if test(dir):
+				return dir
 		err('waf-light requires waflib -> export WAFDIR=/folder')
 
 	dirname = '%s-%s-%s' % (WAF, VERSION, REVISION)
@@ -169,8 +162,7 @@ def find_lib():
 	return dir
 
 wafdir = find_lib()
-if wafdir is not None:
-	sys.path.insert(0, wafdir)
+sys.path.insert(0, wafdir)
 
 if __name__ == '__main__':
 	#import waflib.extras.compat15#PRELUDE
