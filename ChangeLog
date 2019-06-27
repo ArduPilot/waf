@@ -1,3 +1,12 @@
+NEW IN WAF 2.0.18
+-----------------
+* Fix a deadlock with cython and subst tasks #2244
+* Fix rpath processing so that it no longer breaks dependency chains
+* Fix fast_partial.py failures on configuration tests
+* Fix duplicate -fno-strict-aliasing flags in Python compilation flags detection
+* Add a dependency scanner for assembly files (Gas/Yasm)
+* Add a QtTest example to demos/qt5/
+
 NEW IN WAF 2.0.17
 -----------------
 * Improve build performance on FreeBSD and Python3 #2241
