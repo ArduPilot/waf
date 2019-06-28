@@ -40,13 +40,13 @@ def build(ctx):
 		target   = 'cxx_lib',
 		includes = 'cxx_lib')
 
-	# first try to build a C-based cython extension
+	# build a C-based cython extension
 	ctx(
 		features = 'c cshlib pyext',
 		source   = 'src/cy_ctest.pyx',
 		target   = 'cy_ctest',
 		includes = 'c_lib',
-		use	  = 'c_lib')
+		use	 = 'c_lib')
 
 	# then a C++-based one
 	ctx(
@@ -54,7 +54,7 @@ def build(ctx):
 		source   = 'src/cy_cxxtest.pyx',
 		target   = 'cy_cxxtest',
 		includes = 'cxx_lib',
-		use	  = 'cxx_lib')
+		use	 = 'cxx_lib')
 
 	# a C++ application which uses a C function from a cython module
 	ctx(
@@ -62,5 +62,25 @@ def build(ctx):
 		source   = 'cxx_lib/app.cxx',
 		target   = 'cy-app',
 		includes = 'cxx_lib src',
-		use	  = 'cxx_lib'
-		)
+		use	 = 'cxx_lib')
+
+	# ---------------------------------------------------------------
+	# Testcase for #2244 below
+
+	ctx.get_tgen_by_name('cy_ctest').features += ' subst_header_order'
+
+	# a generated header for cy_ctest
+	ctx(
+		features = 'subst',
+		source   = 'c_lib/extra_dep.h.in',
+		target   = 'c_lib/extra_dep.h',
+	)
+
+	from waflib import TaskGen
+	@TaskGen.feature('subst_header_order')
+	@TaskGen.after('process_source')
+	def set_subst_before_cython_tasks(self):
+		tg = self.bld.get_tgen_by_name('c_lib/extra_dep.h')
+		tg.post()
+		for tsk in self.tasks:
+			tsk.run_after.add(tg.tasks[-1])
