@@ -537,12 +537,11 @@ def run_build(self, *k, **kw):
 	"""
 	buf = []
 	for key in sorted(kw.keys()):
-		if key != 'env':
-			v = kw[key]
-			if hasattr(v, '__call__'):
-				buf.append(Utils.h_fun(v))
-			else:
-				buf.append(str(v))
+		v = kw[key]
+		if hasattr(v, '__call__'):
+			buf.append(Utils.h_fun(v))
+		else:
+			buf.append(str(v))
 	h = Utils.h_list(buf)
 	dir = self.bldnode.abspath() + os.sep + (not Utils.is_win32 and '.' or '') + 'conf_check_' + Utils.to_hex(h)
 
