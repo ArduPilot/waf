@@ -4,8 +4,14 @@ NEW IN WAF 2.0.18
 * Fix rpath processing so that it no longer breaks dependency chains
 * Fix fast_partial.py failures on configuration tests
 * Fix duplicate -fno-strict-aliasing flags in Python compilation flags detection
+* Fix annoying PIE errors in demos/asm/
+* Improve configuration tests cache accuracy #2251
+* Improve extras/fast_partial.py compatibility
+* Improve extras/doxygen.py outdir parameter settings #2255
 * Add a dependency scanner for assembly files (Gas/Yasm)
-* Add a QtTest example to demos/qt5/
+* Add executable arguments for configuration tests / execute=True
+* Add a QtTest example to demos/qt5/ #2241
+* Add a cross-compilation option to extras/objcopy.py #2247
 
 NEW IN WAF 2.0.17
 -----------------
