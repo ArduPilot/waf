@@ -223,8 +223,11 @@ def check_endianness(self):
 	tmp = []
 	def check_msg(self):
 		return tmp[0]
+
+	ltoflags = [x for x in self.env.CFLAGS if x.startswith('-flto')]
+	cflags = ['-fno-lto'] if len(ltoflags) else []
 	self.check(fragment=ENDIAN_FRAGMENT, features='c grep_for_endianness',
 		msg='Checking for endianness', define='ENDIANNESS', tmp=tmp,
-		okmsg=check_msg, confcache=None)
+		okmsg=check_msg, confcache=None, cflags=cflags)
 	return tmp[0]
 
