@@ -208,12 +208,12 @@ class grep_for_endianness(Task.Task):
 			return -1
 
 @feature('grep_for_endianness')
-@after_method('process_source')
+@after_method('apply_link')
 def grep_for_endianness_fun(self):
 	"""
 	Used by the endianness configuration test
 	"""
-	self.create_task('grep_for_endianness', self.compiled_tasks[0].outputs[0])
+	self.create_task('grep_for_endianness', self.link_task.outputs[0])
 
 @conf
 def check_endianness(self):
@@ -224,10 +224,8 @@ def check_endianness(self):
 	def check_msg(self):
 		return tmp[0]
 
-	ltoflags = [x for x in self.env.CFLAGS if x.startswith('-flto')]
-	cflags = ['-fno-lto'] if len(ltoflags) else []
-	self.check(fragment=ENDIAN_FRAGMENT, features='c grep_for_endianness',
+	self.check(fragment=ENDIAN_FRAGMENT, features='c cshlib grep_for_endianness',
 		msg='Checking for endianness', define='ENDIANNESS', tmp=tmp,
-		okmsg=check_msg, confcache=None, cflags=cflags)
+		okmsg=check_msg, confcache=None)
 	return tmp[0]
 
