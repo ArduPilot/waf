@@ -6,9 +6,16 @@
 Classes and functions enabling the command system
 """
 
-import os, re, imp, sys
+import os, re, sys
 from waflib import Utils, Errors, Logs
 import waflib.Node
+
+if sys.hexversion > 0x3040000:
+	import types
+	class imp(object):
+		new_module = lambda x: types.ModuleType(x)
+else:
+	import imp
 
 # the following 3 constants are updated on each new release (do not touch)
 HEXVERSION=0x2001200
