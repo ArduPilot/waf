@@ -17,6 +17,7 @@ The following environment variables may be set:
 * WAFCACHE_EVICT_MAX_BYTES: maximum amount of cache size in bytes (10GB)
 * WAFCACHE_EVICT_INTERVAL_MINUTES: minimum time interval to try
                                    and trim the cache (3 minutess)
+* WAFCACHE_NO_PUSH: if set, disables pushing to the cache
 
 Cache access operations (copy to and from) are delegated to pre-forked
 subprocesses. Though these processes perform atomic copies, they
@@ -42,6 +43,7 @@ CACHE_DIR = os.environ.get('WAFCACHE', '/tmp/wafcache_' + getpass.getuser())
 TRIM_MAX_FOLDERS = int(os.environ.get('WAFCACHE_TRIM_MAX_FOLDER', 1000000))
 EVICT_INTERVAL_MINUTES = int(os.environ.get('WAFCACHE_EVICT_INTERVAL_MINUTES', 3))
 EVICT_MAX_BYTES = int(os.environ.get('WAFCACHE_EVICT_MAX_BYTES', 10**10))
+WAFCACHE_NO_PUSH = 1 if os.environ.get('WAFCACHE_NO_PUSH') else 0
 OK = "ok"
 
 try:
@@ -78,10 +80,7 @@ def put_files_cache(self):
 	"""
 	New method for waf Task classes
 	"""
-	if not self.outputs:
-		return
-
-	if getattr(self, 'cached', None):
+	if WAFCACHE_NO_PUSH or getattr(self, 'cached', None) or not self.outputs:
 		return
 
 	bld = self.generator.bld
