@@ -180,9 +180,15 @@ def check_large_file(self, **kw):
 ########################################################################################
 
 ENDIAN_FRAGMENT = '''
+#ifdef _MSC_VER
+#define testshlib_EXPORT __declspec(dllexport)
+#else
+#define testshlib_EXPORT
+#endif
+
 short int ascii_mm[] = { 0x4249, 0x4765, 0x6E44, 0x6961, 0x6E53, 0x7953, 0 };
 short int ascii_ii[] = { 0x694C, 0x5454, 0x656C, 0x6E45, 0x6944, 0x6E61, 0 };
-int use_ascii (int i) {
+int testshlib_EXPORT use_ascii (int i) {
 	return ascii_mm[i] + ascii_ii[i];
 }
 short int ebcdic_ii[] = { 0x89D3, 0xE3E3, 0x8593, 0x95C5, 0x89C4, 0x9581, 0 };
