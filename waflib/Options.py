@@ -282,6 +282,8 @@ class OptionsContext(Context.Context):
 			elif arg != 'options':
 				commands.append(arg)
 
+		if options.jobs < 1:
+			options.jobs = 1
 		for name in 'top out destdir prefix bindir libdir'.split():
 			# those paths are usually expanded from Context.launch_dir
 			if getattr(options, name, None):
