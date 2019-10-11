@@ -645,7 +645,7 @@ class BuildContext(Context.Context):
 		:raises: :py:class:`waflib.Errors.WafError` if a group by the name given already exists
 		"""
 		if name and name in self.group_names:
-			raise Errors.WafError('add_group: name %s already present', name)
+			raise Errors.WafError('add_group: name %s already present' % name)
 		g = []
 		self.group_names[name] = g
 		self.groups.append(g)
