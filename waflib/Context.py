@@ -27,6 +27,9 @@ WAFVERSION="2.0.18"
 WAFREVISION="314689b8994259a84f0de0aaef74d7ce91f541ad"
 """Git revision when the waf version is updated"""
 
+WAFNAME="waf"
+"""Application name displayed on --help"""
+
 ABI = 20
 """Version of the build data cache file format (used in :py:const:`waflib.Context.DBFILE`)"""
 

@@ -44,7 +44,7 @@ class opt_parser(optparse.OptionParser):
 	"""
 	def __init__(self, ctx, allow_unknown=False):
 		optparse.OptionParser.__init__(self, conflict_handler='resolve', add_help_option=False,
-			version='waf %s (%s)' % (Context.WAFVERSION, Context.WAFREVISION))
+			version='%s %s (%s)' % (Context.WAFNAME, Context.WAFVERSION, Context.WAFREVISION))
 		self.formatter.width = Logs.get_term_cols()
 		self.ctx = ctx
 		self.allow_unknown = allow_unknown
@@ -96,11 +96,11 @@ class opt_parser(optparse.OptionParser):
 		lst.sort()
 		ret = '\n'.join(lst)
 
-		return '''waf [commands] [options]
+		return '''%s [commands] [options]
 
-Main commands (example: ./waf build -j4)
+Main commands (example: ./%s build -j4)
 %s
-''' % ret
+''' % (Context.WAFNAME, Context.WAFNAME, ret)
 
 
 class OptionsContext(Context.Context):

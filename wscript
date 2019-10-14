@@ -101,6 +101,7 @@ def options(opt):
 	# those ones are not too interesting
 	opt.add_option('--set-version', default='',
 		help='sets the version number for waf releases (for the maintainer)', dest='setver')
+	opt.add_option('--set-name', default='waf', help=optparse.SUPPRESS_HELP, dest='wafname')
 
 	opt.add_option('--strip', action='store_true', default=True,
 		help='shrinks waf (strip docstrings, saves 33kb)',
@@ -316,6 +317,10 @@ def create_waf(self, *k, **kw):
 
 	with open('waf-light', 'r') as f:
 		code1 = f.read()
+
+	# tune the application name if necessary
+	if Options.options.wafname != 'waf':
+		Options.options.prelude = '\tfrom waflib import Context\n\tContext.WAFNAME=%r\n' % Options.options.wafname + Options.options.prelude
 
 	# now store the revision unique number in waf
 	code1 = code1.replace("if sys.hexversion<0x206000f:\n\traise ImportError('Python >= 2.6 is required to create the waf file')\n", '')

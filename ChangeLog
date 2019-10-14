@@ -1,3 +1,10 @@
+NEW IN WAF 2.0.19
+-----------------
+* Fix negative values for -j #2256
+* Fix the Swig example compatibility with Python3 #2259
+* Add extras/wafcache
+* Tune the application name on --help #2254
+
 NEW IN WAF 2.0.18
 -----------------
 * Fix a deadlock with cython and subst tasks #2244
