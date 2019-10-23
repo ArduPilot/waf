@@ -431,10 +431,8 @@ def loop(service):
 
 	[sig, files_from, files_to] = cPickle.loads(base64.b64decode(txt))
 	if files_from:
-		# pushing to cache is done without any wait
-		th = threading.Thread(target=service.copy_to_cache, args=(sig, files_from, files_to))
-		th.setDaemon(True)
-		th.start()
+		# TODO return early when pushing files upstream
+		ret = service.copy_from_cache(sig, files_from, files_to)
 	elif files_to:
 		# the build process waits for workers to (possibly) obtain files from the cache
 		ret = service.copy_from_cache(sig, files_from, files_to)
