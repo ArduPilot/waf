@@ -87,23 +87,11 @@ def build(bld):
 	if not bld.env.HAVE_JAVA:
 		return
 
-	from waflib.extras import swig
+	swigsrcdir = bld.path.get_bld().make_node('extend/java') # destination for generated java source from swig
+	swigoutdir = bld.path.get_bld().make_node('extend/jar') # destination for generated class files
 
-	srcdir = bld.path.get_bld().make_node('extend/java') # destination for generated java file
-
-	#""" # BEGIN BLOCK 1
-	d = bld.path.make_node('extend/java/foo/bar/pouet')
-	javanodes = [d.find_or_declare(x) for x in 'A.java  test_swig_waf.java  test_swig_wafJNI.java'.split()]
-	dec = bld.tools['swig'].swigf
-	#@dec <- python 2.3 does not support the @decorator notation
-	def swig_java(tsk):
-		tsk.outputs.extend(javanodes)
-	bld.tools['swig'].swigf(swig_java)
-	""" # END BLOCK 1
-	#"""# do not remove
-
-
-	bld(
+	# Will generate code via swig and also the JNI library in C++
+	jniswig = bld(
 		features   = 'cxx cxxshlib',
 		source     = 'extend/java/test_swig_waf.i',
 		target     = 'extend/java/_test_swig_waf',
@@ -113,44 +101,25 @@ def build(bld):
 		uselib     = 'JAVA',
 		use        = 'mylib')
 
-	#""" # BEGIN BLOCK 2
-	""" # END BLOCK 2
-
-	def move_java_files(task):
-		import os, shutil
-		from waflib import Utils
-
-		node = srcdir.make_node('foo/bar/pouet/')
-		files = Utils.listdir(node.abspath())
-		for x in files:
-			if x.endswith('.java'):
-				# create a node in the directory we want to
-				j = node.make_node(x) # create a node
-	# depend on the .i file to make sure the .java files are copied after swig is executed
-	bld(name='move_and_read', rule=move_java_files, source='extend/java/test_swig_waf.i', after=['swig'], before=['javac'])
-	#"""
-
-
-	bld(rule='cp ${SRC} ${TGT}', source=bld.path.find_resource('extend/java/Foo.java'), target=srcdir.make_node('foo/bar/pouet/Foo.java'), before=['javac'], after=['swig'])
-
-	tmp = bld.path.get_bld().make_node('maha')
-
-	bld(features   = 'javac jar',
-		srcdir     = srcdir,
+	# Java will contain the generated code from swigsrcdir plus the local sources
+	jswig = bld(features   = 'javac jar',
+		srcdir     = [ swigsrcdir , 'extend/java'] ,
 		sourcepath = [],
-		outdir     = tmp, # we do need another folder here
-		basedir    = tmp,
-		destfile   = 'maha.jar'
+		outdir     = swigoutdir,
+		basedir    = swigoutdir,
+		destfile   = 'maha.jar',
 		)
 
-	bld.add_post_fun(exec_test_java)
+	# Post JNI library and Java generators so we have tasks created
+	jniswig.post()
+	jswig.post()
+	# Now make sure javac task is executed after swig generation
+	for x in jniswig.tasks:
+		if x.__class__.__name__ == 'swig':
+			jswig.javac_task.set_run_after(x)
 
-	#########################################
-	# listing the java nodes is required to ensure the swig task
-	# is executed whenever the java files are removed from
-	# the build directory
-	#
-	# to list the java files automatically, comment the starting character '#' in the lines "BEGIN BLOCK 1" and "BEGIN BLOCK 2"
+	# Launch the test after build
+	bld.add_post_fun(exec_test_java)
 
 
 def exec_test_java(bld):
