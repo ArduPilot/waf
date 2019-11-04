@@ -10,6 +10,8 @@ def add_pdb_per_object(self):
     around LNK4099. Flags are updated with a unique /Fd flag based on the
     task output name. This is separate from the link pdb.
     """
+    if not hasattr(self, 'compiled_tasks'):
+        return
 
     link_task = getattr(self, 'link_task', None)
 
