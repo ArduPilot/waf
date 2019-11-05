@@ -86,6 +86,10 @@ def parse_flags(self, line, uselib_store, env=None, force_static=False, posix=No
 	:type uselib_store: string
 	:param env: config set or conf.env by default
 	:type env: :py:class:`waflib.ConfigSet.ConfigSet`
+	:param force_static: force usage of static libraries
+	:type force_static: bool default False
+	:param posix: usage of POSIX mode for shlex lexical analiysis library
+	:type posix: bool default True
 	"""
 
 	assert(isinstance(line, str))
@@ -246,6 +250,8 @@ def exec_cfg(self, kw):
 	* if modversion is given, then return the module version
 	* else, execute the *-config* program with the *args* and *variables* given, and set the flags on the *conf.env.FLAGS_name* variable
 
+	:param path: the **-config program to use**
+	:type path: list of string
 	:param atleast_pkgconfig_version: minimum pkg-config version to use (disable other tests)
 	:type atleast_pkgconfig_version: string
 	:param package: package name, for example *gtk+-2.0*
@@ -260,6 +266,12 @@ def exec_cfg(self, kw):
 	:type variables: list of string
 	:param define_variable: additional variables to define (also in conf.env.PKG_CONFIG_DEFINES)
 	:type define_variable: dict(string: string)
+	:param pkg_config_path: paths where pkg-config should search for .pc config files (overrides env.PKG_CONFIG_PATH if exists)
+	:type pkg_config_path: string, list of directories separated by colon
+	:param force_static: force usage of static libraries
+	:type force_static: bool default False
+	:param posix: usage of POSIX mode for shlex lexical analiysis library
+	:type posix: bool default True
 	"""
 
 	path = Utils.to_list(kw['path'])
@@ -334,6 +346,7 @@ def check_cfg(self, *k, **kw):
 	"""
 	Checks for configuration flags using a **-config**-like program (pkg-config, sdl-config, etc).
 	This wraps internal calls to :py:func:`waflib.Tools.c_config.validate_cfg` and :py:func:`waflib.Tools.c_config.exec_cfg`
+	so check exec_cfg parameters descriptions for more details on kw passed
 
 	A few examples::
 
