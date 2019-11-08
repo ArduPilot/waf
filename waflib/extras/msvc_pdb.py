@@ -17,34 +17,32 @@ def add_pdb_per_object(self):
 	link_task = getattr(self, 'link_task', None)
 
 	for task in self.compiled_tasks:
-	if task.inputs and task.inputs[0].name().lower().endswith('.rc'):
-		continue
+		if task.inputs and task.inputs[0].name().lower().endswith('.rc'):
+			continue
 
-		node = task.outputs[0].change_ext('.pdb')
-		pdb_flag = '/Fd:' + node.abspath()
-
-		canAddNode = False
+		add_pdb = False
 		for flagname in ('CFLAGS', 'CXXFLAGS', 'FCFLAGS'):
-			if not flagname in task.env:
-				continue
-
+			# several languages may be used at once
 			flags = task.env[flagname]
-
-			for i, flag in reversed(list(enumerate(flags))):
-				# Capture both /Zi and /ZI, which cause the compiler to emit a PDB file.
+			for flag in flags:
 				if flag[1:].lower() == 'zi':
-					canAddNode = True
-					task.env.append_unique(flagname, pdb_flag)
+					add_pdb = True
+					break
 
-				# Strip existing /Fd, /FS, or /MP flags.
-				# We have to check for /Fd case sensitive, so that we won't accidentally
-				# overwrite GCC flags such as "-fdata-sections".
-				if flag[1:3] == 'Fd' \
-				or flag[1:].lower() == 'fs' \
-				or flag[1:].lower() == 'mp':
-					del task.env[flagname][i]
+		if add_pdb:
+			node = task.outputs[0].change_ext('.pdb')
+			pdb_flag = '/Fd:' + node.abspath()
 
-		if canAddNode:
+			for flagname in ('CFLAGS', 'CXXFLAGS', 'FCFLAGS'):
+				task.env.append_unique(flagname, pdb_flag)
+
+				buf = [pdb_flag]
+				for flag in task.env[flagname]:
+					if flag[1:3] == 'Fd' or flag[1:].lower() == 'fs' or flag[1:].lower() == 'mp':
+						continue
+					buf.append(flag)
+				task.env[flagname] = buf
+
 			if link_task and not node in link_task.dep_nodes:
 				link_task.dep_nodes.append(node)
 			if not node in task.outputs:
