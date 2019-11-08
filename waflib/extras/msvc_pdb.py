@@ -17,7 +17,7 @@ def add_pdb_per_object(self):
 	link_task = getattr(self, 'link_task', None)
 
 	for task in self.compiled_tasks:
-		if task.inputs and task.inputs[0].name().lower().endswith('.rc'):
+		if task.inputs and task.inputs[0].name.lower().endswith('.rc'):
 			continue
 
 		add_pdb = False
