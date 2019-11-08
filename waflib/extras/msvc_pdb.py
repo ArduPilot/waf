@@ -23,8 +23,7 @@ def add_pdb_per_object(self):
 		add_pdb = False
 		for flagname in ('CFLAGS', 'CXXFLAGS', 'FCFLAGS'):
 			# several languages may be used at once
-			flags = task.env[flagname]
-			for flag in flags:
+			for flag in task.env[flagname]:
 				if flag[1:].lower() == 'zi':
 					add_pdb = True
 					break
@@ -34,8 +33,6 @@ def add_pdb_per_object(self):
 			pdb_flag = '/Fd:' + node.abspath()
 
 			for flagname in ('CFLAGS', 'CXXFLAGS', 'FCFLAGS'):
-				task.env.append_unique(flagname, pdb_flag)
-
 				buf = [pdb_flag]
 				for flag in task.env[flagname]:
 					if flag[1:3] == 'Fd' or flag[1:].lower() == 'fs' or flag[1:].lower() == 'mp':
