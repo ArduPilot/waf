@@ -2,7 +2,8 @@
 # encoding: utf-8
 # Rafaël Kooi 2019
 
-from waflib import TaskGen, Tools
+from waflib import TaskGen
+
 @TaskGen.feature('c', 'cxx', 'fc')
 @TaskGen.after_method('propagate_uselib_vars')
 def add_pdb_per_object(self):
@@ -16,6 +17,9 @@ def add_pdb_per_object(self):
     link_task = getattr(self, 'link_task', None)
 
     for task in self.compiled_tasks:
+	if task.inputs and task.inputs[0].name().lower().endswith('.rc'):
+		continue
+
         node = task.outputs[0].change_ext('.pdb')
         pdb_flag = '/Fd:' + node.abspath()
 
