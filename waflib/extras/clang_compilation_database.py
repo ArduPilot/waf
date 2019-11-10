@@ -46,7 +46,7 @@ class ClangDbContext(Build.BuildContext):
 	'''generates compile_commands.json by request'''
 	cmd = 'clangdb'
 	clang_compilation_database_tasks = []
-	
+
 	def write_compilation_database(self):
 		"""
 		Write the clang compilation database as JSON
@@ -63,9 +63,8 @@ class ClangDbContext(Build.BuildContext):
 				cmd = task.last_cmd
 			except AttributeError:
 				continue
-			directory = getattr(task, 'cwd', self.variant_dir)
 			f_node = task.inputs[0]
-			filename = os.path.relpath(f_node.abspath(), directory)
+			filename = f_node.path_from(task.getcwd())
 			entry = {
 				"directory": directory,
 				"arguments": cmd,
@@ -91,7 +90,7 @@ class ClangDbContext(Build.BuildContext):
 		# exec_command temporarily
 		def exec_command(self, *k, **kw):
 			return 0
-		
+
 		for g in self.groups:
 			for tg in g:
 				try:
@@ -100,7 +99,7 @@ class ClangDbContext(Build.BuildContext):
 					pass
 				else:
 					f()
-				
+
 				if isinstance(tg, Task.Task):
 					lst = [tg]
 				else: lst = tg.tasks
@@ -117,7 +116,7 @@ class ClangDbContext(Build.BuildContext):
 EXECUTE_PATCHED = False
 def patch_execute():
 	global EXECUTE_PATCHED
-	
+
 	if EXECUTE_PATCHED:
 		return
 
@@ -127,11 +126,11 @@ def patch_execute():
 		"""
 		if type(self) == Build.BuildContext:
 			Scripting.run_command('clangdb')
-			
+
 		old_execute_build(self)
 
 	old_execute_build = getattr(Build.BuildContext, 'execute_build', None)
 	setattr(Build.BuildContext, 'execute_build', new_execute_build)
 	EXECUTE_PATCHED = True
-	
+
 patch_execute()
