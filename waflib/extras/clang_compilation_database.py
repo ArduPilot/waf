@@ -25,7 +25,6 @@ Usage:
 		conf.load('clang_compilation_database')
 """
 
-import os
 from waflib import Logs, TaskGen, Task, Build, Scripting
 
 Task.Task.keep_last_cmd = True
@@ -63,11 +62,10 @@ class ClangDbContext(Build.BuildContext):
 				cmd = task.last_cmd
 			except AttributeError:
 				continue
-			directory = getattr(task, 'cwd', self.variant_dir)
 			f_node = task.inputs[0]
 			filename = f_node.path_from(task.get_cwd())
 			entry = {
-				"directory": directory,
+				"directory": task.get_cwd().abspath(),
 				"arguments": cmd,
 				"file": filename,
 			}
