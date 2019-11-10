@@ -63,6 +63,7 @@ class ClangDbContext(Build.BuildContext):
 				cmd = task.last_cmd
 			except AttributeError:
 				continue
+			directory = getattr(task, 'cwd', self.variant_dir)
 			f_node = task.inputs[0]
 			filename = f_node.path_from(task.get_cwd())
 			entry = {
