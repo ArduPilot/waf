@@ -1,9 +1,13 @@
 NEW IN WAF 2.0.19
 -----------------
+* Enable race-free pdb file generation waflib/extras/msvc_pdb.py #1731
 * Fix negative values for -j #2256
-* Fix the Swig example compatibility with Python3 #2259
-* Add extras/wafcache
+* Fix Swig example compatibility with Python3 #2259
+* Fix lto settings for endianness configuration tests #2250
 * Tune the application name on --help #2254
+* Improve Qt5's fPIC/fPIE detection
+* Propagate LDFLAGS to Fortran tasks (in addition to LINKFLAGS)
+* Enable local and remote build object caches waflib/extras/wafcache.py
 
 NEW IN WAF 2.0.18
 -----------------
