@@ -46,7 +46,6 @@ def irixcc_common_flags(conf):
 
 def configure(conf):
 	conf.find_irixcc()
-	conf.find_cpp()
 	conf.find_ar()
 	conf.irixcc_common_flags()
 	conf.cc_load_tools()
