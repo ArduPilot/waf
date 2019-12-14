@@ -1282,10 +1282,11 @@ def multicheck(self, *k, **kw):
 	tasks = []
 
 	id_to_task = {}
-	for dct in k:
+	for counter, dct in enumerate(k):
 		x = Task.classes['cfgtask'](bld=bld, env=None)
 		tasks.append(x)
 		x.args = dct
+		x.args['multicheck_counter'] = counter
 		x.bld = bld
 		x.conf = self
 		x.args = dct
