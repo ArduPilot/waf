@@ -123,7 +123,7 @@ def patch_execute():
 		"""
 		Invoke clangdb command before build
 		"""
-		if isinstance(self, Build.BuildContext):
+		if self.cmd.startswith('build'):
 			Scripting.run_command('clangdb')
 
 		old_execute_build(self)
