@@ -60,6 +60,8 @@ import os
 from waflib import Task, TaskGen, Options, Errors, Utils, Logs
 from waflib.Tools import ccroot
 
+JAR_RE = '**/*'
+
 def _process_use_rec(self, name):
 	"""
 	Recursively process ``use`` for task generator with name ``name``..
@@ -138,6 +140,20 @@ def javatest_process_use(self):
 				else:
 					# Only add to libpath if the link task is not a Python extension
 					extend_unique(self.javatest_libpaths, [tg.link_task.outputs[0].parent.abspath()])
+
+		if 'javac' in tg.features or 'jar' in tg.features:
+			if hasattr(tg, 'jar_task'):
+				# For Java JAR tasks depend on generated JAR
+				extend_unique(self.javatest_dep_nodes, tg.jar_task.outputs)
+			else:
+				# For Java non-JAR ones we need to glob generated files (Java output files are not predictable)
+				if hasattr(tg, 'outdir'):
+					base_node = tg.outdir
+				else:
+					base_node = tg.path.get_bld()
+
+				self.javatest_dep_nodes.extend([dx for dx in base_node.ant_glob(JAR_RE, remove=False, quiet=True)])
+
 
 
 @TaskGen.feature('javatest')
