@@ -4,7 +4,7 @@
 import sys
 
 def configure(conf):
-	conf.load('gcc gas')
+	conf.load('gcc gas gccdeps')
 	try:
 		size = sys.maxint
 	except AttributeError:
