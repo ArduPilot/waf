@@ -62,6 +62,21 @@ class opt_parser(optparse.OptionParser):
 				else:
 					self.error(str(e))
 
+	def _process_long_opt(self, rargs, values):
+		# --custom-option=-ftxyz is interpreted as -f -t... see #2280
+		if self.allow_unknown:
+			back = [] + rargs
+			try:
+				optparse.OptionParser._process_long_opt(self, rargs, values)
+			except optparse.BadOptionError:
+				while rargs:
+					rargs.pop()
+				rargs.extend(back)
+				rargs.pop(0)
+				raise
+		else:
+			optparse.OptionParser._process_long_opt(self, rargs, values)
+
 	def print_usage(self, file=None):
 		return self.print_help(file)
 
