@@ -150,7 +150,7 @@ def parse_flags(self, line, uselib_store, env=None, force_static=False, posix=No
 		elif x.startswith('-std='):
 			prefix = 'CXXFLAGS' if '++' in x else 'CFLAGS'
 			app(prefix, x)
-		elif x.startswith('+') or x in ('-pthread', '-fPIC', '-fpic', '-fPIE', '-fpie'):
+		elif x.startswith('+') or x in ('-pthread', '-fPIC', '-fpic', '-fPIE', '-fpie', '-flto', '-fno-lto'):
 			app('CFLAGS', x)
 			app('CXXFLAGS', x)
 			app('LINKFLAGS', x)
