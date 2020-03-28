@@ -1,3 +1,14 @@
+NEW IN WAF 2.0.20
+-----------------
+* Detect -flto and -fno-lto in parse_config #2281
+* Improve custom option processing #2280
+* Enable Clang on cygwin #2279
+* Make distclean target 'no_lock_in_top/run' modifiers compatible with env vars #2271
+* Update irix compiler detection
+* Exclude ConfigSet from altering ConfigurationContext.run_build caches #2273
+* Add gas support in extras/gccdeps.py #2278
+* Improve compatibility with custom commands in extras/clang_compilation_database #2274
+
 NEW IN WAF 2.0.19
 -----------------
 * Enable race-free pdb file generation waflib/extras/msvc_pdb.py #1731
