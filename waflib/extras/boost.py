@@ -271,7 +271,7 @@ def boost_get_libs(self, *k, **kw):
 		return None
 
 	# extensions from Tools.ccroot.lib_patterns
-	wo_ext = re.compile(r"\.(a|so|lib|dll|dylib)$")
+	wo_ext = re.compile(r"\.(a|so|lib|dll|dylib)(\.[0-9\.]+)?$")
 	def format_lib_name(name):
 		if name.startswith('lib') and self.env.CC_NAME != 'msvc':
 			name = name[3:]
