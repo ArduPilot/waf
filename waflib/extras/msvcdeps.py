@@ -211,11 +211,14 @@ def exec_command(self, cmd, **kw):
 			# get one from the exception object
 			ret = getattr(e, 'returncode', 1)
 
+		Logs.debug('msvcdeps: Running for: %s' % self.inputs[0])
 		for line in raw_out.splitlines():
 			if line.startswith(INCLUDE_PATTERN):
-				inc_path = line[len(INCLUDE_PATTERN):].strip()
+				# Only strip whitespace after log to preserve
+				# dependency structure in debug output
+				inc_path = line[len(INCLUDE_PATTERN):]
 				Logs.debug('msvcdeps: Regex matched %s', inc_path)
-				self.msvcdeps_paths.append(inc_path)
+				self.msvcdeps_paths.append(inc_path.strip())
 			else:
 				out.append(line)
 
