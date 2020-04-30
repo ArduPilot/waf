@@ -57,7 +57,23 @@ A few options (--qt{dir,bin,...}) and environment variables
 (QT5_{ROOT,DIR,MOC,UIC,XCOMPILE}) allow finer tuning of the tool,
 tool path selection, etc; please read the source for more info.
 
-The detection uses pkg-config on Linux by default. To force static library detection use:
+The detection uses pkg-config on Linux by default. The list of
+libraries to be requested to pkg-config is formulated by scanning
+in the QTLIBS directory (that can be passed via --qtlibs or by
+setting the environment variable QT5_LIBDIR otherwise is derived
+by querying qmake for QT_INSTALL_LIBS directory) for shared/static
+libraries present.
+Alternatively the list of libraries to be requested via pkg-config
+can be set using the qt5_vars attribute, ie:
+
+      conf.qt5_vars = ['Qt5Core', 'Qt5Gui', 'Qt5Widgets', 'Qt5Test'];
+
+This can speed up configuration phase if needed libraries are
+known beforehand, can improve detection on systems with a
+sparse QT5 libraries installation (ie. NIX) and can improve
+detection of some header-only Qt modules (ie. Qt5UiPlugin).
+
+To force static library detection use:
 QT5_XCOMPILE=1 QT5_FORCE_STATIC=1 waf configure
 """
 
