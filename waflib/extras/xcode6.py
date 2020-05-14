@@ -591,7 +591,7 @@ def process_xcode(self):
 
 	# The keys represents different build configuration, e.g. Debug, Release and so on..
 	# Insert our generated build settings to all configuration names
-	keys = set(settings.keys() + bld.env.PROJ_CONFIGURATION.keys())
+	keys = set(settings.keys()) | set(bld.env.PROJ_CONFIGURATION.keys())
 	for k in keys:
 		if k in settings:
 			settings[k].update(bldsettings)
