@@ -570,7 +570,8 @@ def process_xcode(self):
 		'OTHER_LDFLAGS': libs + ' ' + frameworks + ' ' + ' '.join(bld.env['LINKFLAGS']),
 		'OTHER_CPLUSPLUSFLAGS': Utils.to_list(self.env['CXXFLAGS']),
 		'OTHER_CFLAGS': Utils.to_list(self.env['CFLAGS']),
-		'INSTALL_PATH': []
+		'INSTALL_PATH': [],
+		'GCC_PREPROCESSOR_DEFINITIONS': self.env['DEFINES']
 	}
 
 	# Install path
