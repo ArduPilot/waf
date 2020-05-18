@@ -167,8 +167,8 @@ class XCodeNode(object):
 		elif isinstance(value, list):
 			result = "(\n"
 			for i in value:
-				result = result + "\t\t\t%s,\n" % self.tostring(i)
-			result = result + "\t\t)"
+				result = result + "\t\t\t\t%s,\n" % self.tostring(i)
+			result = result + "\t\t\t)"
 			return result
 		elif isinstance(value, XCodeNode):
 			return value._id
