@@ -99,7 +99,7 @@ env.PROJ_CONFIGURATION = {
 		...
 	}
 	'Release': {
-		'ARCHS' x86_64'
+		'ARCHS': x86_64'
 		...
 	}
 }
@@ -565,10 +565,9 @@ def process_xcode(self):
 	# Override target specific build settings
 	bldsettings = {
 		'HEADER_SEARCH_PATHS': ['$(inherited)'] + self.env['INCPATHS'],
-		'LIBRARY_SEARCH_PATHS': ['$(inherited)'] + Utils.to_list(self.env.LIBPATH) + Utils.to_list(self.env.STLIBPATH) + Utils.to_list(self.env.LIBDIR) ,
+		'LIBRARY_SEARCH_PATHS': ['$(inherited)'] + Utils.to_list(self.env.LIBPATH) + Utils.to_list(self.env.STLIBPATH) + Utils.to_list(self.env.LIBDIR),
 		'FRAMEWORK_SEARCH_PATHS': ['$(inherited)'] + Utils.to_list(self.env.FRAMEWORKPATH),
-		'OTHER_LDFLAGS': libs + ' ' + frameworks,
-		'OTHER_LIBTOOLFLAGS': bld.env['LINKFLAGS'],
+		'OTHER_LDFLAGS': libs + ' ' + frameworks + ' ' + ' '.join(bld.env['LINKFLAGS']),
 		'OTHER_CPLUSPLUSFLAGS': Utils.to_list(self.env['CXXFLAGS']),
 		'OTHER_CFLAGS': Utils.to_list(self.env['CFLAGS']),
 		'INSTALL_PATH': []
