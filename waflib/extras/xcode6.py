@@ -163,7 +163,7 @@ class XCodeNode(object):
 			result = result + "\t\t}"
 			return result
 		elif isinstance(value, str):
-			return "\"%s\"" % value
+			return '"%s"' % value.replace('"', '\\\\\\"')
 		elif isinstance(value, list):
 			result = "(\n"
 			for i in value:
