@@ -15,7 +15,7 @@ Usage::
 		conf.load('compiler_cxx gccdeps')
 """
 
-import os, re, threading
+import errno, os, re, threading
 from waflib import Task, Logs, Utils, Errors
 from waflib.Tools import c_preproc
 from waflib.TaskGen import before_method, feature
@@ -167,6 +167,10 @@ def sig_implicit_deps(self):
 		return Task.Task.sig_implicit_deps(self)
 	except Errors.WafError:
 		return Utils.SIG_NIL
+	except EnvironmentError as e:
+		if e.errno == errno.ENOENT:
+			return Utils.SIG_NIL
+		raise
 
 def wrap_compiled_task(classname):
 	derived_class = type(classname, (Task.classes[classname],), {})

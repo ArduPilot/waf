@@ -25,7 +25,7 @@ Usage::
 		conf.load('compiler_cxx msvcdeps')
 '''
 
-import os, sys, tempfile, threading
+import errno, os, sys, tempfile, threading
 
 from waflib import Context, Errors, Logs, Task, Utils
 from waflib.Tools import c_preproc, c, cxx, msvc
@@ -155,6 +155,10 @@ def sig_implicit_deps(self):
 		return Task.Task.sig_implicit_deps(self)
 	except Errors.WafError:
 		return Utils.SIG_NIL
+	except EnvironmentError as e:
+		if e.errno == errno.ENOENT:
+			return Utils.SIG_NIL
+		raise
 
 def exec_command(self, cmd, **kw):
 	if self.env.CC_NAME not in supported_compilers:
