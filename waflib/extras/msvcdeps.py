@@ -25,7 +25,7 @@ Usage::
 		conf.load('compiler_cxx msvcdeps')
 '''
 
-import errno, os, sys, tempfile, threading
+import os, sys, tempfile, threading
 
 from waflib import Context, Errors, Logs, Task, Utils
 from waflib.Tools import c_preproc, c, cxx, msvc
@@ -150,15 +150,25 @@ def scan(self):
 def sig_implicit_deps(self):
 	if self.env.CC_NAME not in supported_compilers:
 		return super(self.derived_msvcdeps, self).sig_implicit_deps()
+	bld = self.generator.bld
 
 	try:
-		return Task.Task.sig_implicit_deps(self)
-	except Errors.WafError:
-		return Utils.SIG_NIL
-	except EnvironmentError as e:
-		if e.errno == errno.ENOENT:
-			return Utils.SIG_NIL
-		raise
+		return self.compute_sig_implicit_deps()
+	except Errors.TaskNotReady:
+		raise ValueError("Please specify the build order precisely with msvcdeps (c/c++ tasks)")
+	except EnvironmentError:
+		# If a file is renamed, assume the dependencies are stale and must be recalculated
+		for x in bld.node_deps.get(self.uid(), []):
+			if not x.is_bld() and not x.exists():
+				try:
+					del x.parent.children[x.name]
+				except KeyError:
+					pass
+
+	key = self.uid()
+	bld.node_deps[key] = []
+	bld.raw_deps[key] = []
+	return Utils.SIG_NIL
 
 def exec_command(self, cmd, **kw):
 	if self.env.CC_NAME not in supported_compilers:
