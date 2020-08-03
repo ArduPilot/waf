@@ -233,8 +233,9 @@ def build(bld):
 		# already called once
 		return
 
-	for x in range(bld.jobs):
-		process_pool.append(get_process())
+	# pre-allocation
+	processes = [get_process() for x in range(bld.jobs)]
+	process_pool.extend(processes)
 
 	Task.Task.can_retrieve_cache = can_retrieve_cache
 	Task.Task.put_files_cache = put_files_cache
