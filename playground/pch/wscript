@@ -53,7 +53,7 @@ def build(bld):
 		source = 'a.cpp',
 		use = 'BOOST')
 
-	bld(features = 'cxx cxxprogram pch',
+	bld(features = 'cxx cxxprogram',
 		target = 'test1',
 		source = 'b.cpp c.cpp main.cpp',
 		use    = 'base-with-pch')
