@@ -62,7 +62,7 @@ by using the *${}* symbol, which reads the values from the attribute bld.env::
 		bld(rule='echo ${MESSAGE}', always=True)
 
 The bld object is an instance of :py:class:`waflib.Build.BuildContext`, its *env* attribute is an instance :py:class:`waflib.ConfigSet.ConfigSet`.
-The values are set in this object to be shared/stored/loaded easily. Here is how to do the same thing by sharing data between the configuration and build::
+This object is also accessible as an attribute on the `configure()` method's `cnf` parameter. Therefore, values can be shared/stored/loaded easily:
 
 	def configure(cnf):
 		cnf.env.MESSAGE = 'Hello, world!'
