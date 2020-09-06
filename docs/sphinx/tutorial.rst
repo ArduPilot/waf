@@ -24,7 +24,7 @@ In general, a project will consist of several phases:
 Each phase is modelled in the wscript file as a python function which takes as argument an instance of :py:class:`waflib.Context.Context`.
 Let's start with a new wscript file in the directory '/tmp/myproject'::
 
-	def configure(conf):
+	def configure(cnf):
 		print("configure!")
 
 	def build(bld):
@@ -111,9 +111,9 @@ Here is a script for a more complicated project::
 The method :py:func:`waflib.Tools.c_config.check` executes a build internally to check if the library ``libm`` is present on the operating system.
 It will then define variables such as:
 
-* ``conf.env.LIB_M = ['m']``
-* ``conf.env.CFLAGS_M = ['-Wall']``
-* ``conf.env.DEFINES_M = ['var=foo']``
+* ``cnf.env.LIB_M = ['m']``
+* ``cnf.env.CFLAGS_M = ['-Wall']``
+* ``cnf.env.DEFINES_M = ['var=foo']``
 
 By stating ``use=['M', 'mylib']``, the program *app* is going to inherit all the *M* variables defined
 during the configuration. The program will also use the library *mylib* and both the build order and the dependencies
