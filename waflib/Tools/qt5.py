@@ -482,6 +482,9 @@ def configure(self):
 
 	The detection uses the program ``pkg-config`` through :py:func:`waflib.Tools.config_c.check_cfg`
 	"""
+	if 'COMPILER_CXX' not in self.env:
+		self.fatal('No CXX compiler defined: did you forget to configure compiler_cxx first?')
+
 	self.find_qt5_binaries()
 	self.set_qt5_libs_dir()
 	self.set_qt5_libs_to_check()
@@ -493,9 +496,6 @@ def configure(self):
 	# warn about this during the configuration too
 	if not has_xml:
 		Logs.error('No xml.sax support was found, rcc dependencies will be incomplete!')
-
-	if 'COMPILER_CXX' not in self.env:
-		self.fatal('No CXX compiler defined: did you forget to configure compiler_cxx first?')
 
 	# Qt5 may be compiled with '-reduce-relocations' which requires dependent programs to have -fPIE or -fPIC?
 	frag = '#include <QMap>\nint main(int argc, char **argv) {QMap<int,int> m;return m.keys().size();}\n'
@@ -653,7 +653,7 @@ def set_qt5_libs_dir(self):
 		except Errors.WafError:
 			qtdir = self.cmd_and_log(env.QMAKE + ['-query', 'QT_INSTALL_PREFIX']).strip()
 			qtlibs = os.path.join(qtdir, 'lib')
-	self.msg('Found the Qt5 libraries in', qtlibs)
+	self.msg('Found the Qt5 library path', qtlibs)
 	env.QTLIBS = qtlibs
 
 @conf
