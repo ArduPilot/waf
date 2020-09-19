@@ -16,9 +16,9 @@ def configure(conf):
 	conf.load('compiler_cxx qt5 waf_unit_test')
 	#conf.env.append_value('CXXFLAGS', ['-g']) # test
 
-	if not conf.env.QT_LUPDATE:
+	if not conf.env.QT_LRELEASE:
 		# While qt5 detects most Qt tools, most of them are optional
-		conf.fatal('lupdate was not found')
+		conf.fatal('lrelease was not found')
 
 	# These tests would run on Ubuntu but not on other platforms
 	conf.check(
