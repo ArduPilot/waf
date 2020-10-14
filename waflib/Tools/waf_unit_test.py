@@ -108,7 +108,8 @@ def make_test(self):
 	tsk = self.create_task('utest', self.link_task.outputs)
 	if getattr(self, 'ut_str', None):
 		self.ut_run, lst = Task.compile_fun(self.ut_str, shell=getattr(self, 'ut_shell', False))
-		tsk.vars = lst + tsk.vars
+		tsk.env['UT_STR'] = self.ut_str
+		tsk.vars = lst + tsk.vars + ['UT_STR']
 
 	self.handle_ut_cwd('ut_cwd')
 
