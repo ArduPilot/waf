@@ -140,8 +140,8 @@ def make_test(self):
 
 	if not hasattr(self, 'ut_cmd'):
 		self.ut_cmd = getattr(Options.options, 'testcmd', False)
-		self.env.append_value('UT_DEPS', str(self.ut_cmd))
 
+	self.env.append_value('UT_DEPS', str(self.ut_cmd))
 	self.env.append_value('UT_DEPS', self.ut_paths)
 	self.env.append_value('UT_DEPS', ['%r%r' % (key, self.ut_env[key]) for key in self.ut_env])
 
