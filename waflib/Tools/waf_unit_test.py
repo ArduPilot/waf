@@ -97,6 +97,7 @@ def make_interpreted_test(self):
 		if isinstance(v, str):
 			v = v.split(os.pathsep)
 		self.ut_env[k] = os.pathsep.join(p + v)
+	self.env.append_value('UT_DEPS', ['%r%r' % (key, self.ut_env[key]) for key in self.ut_env])
 
 @feature('test')
 @after_method('apply_link', 'process_use')
@@ -108,8 +109,8 @@ def make_test(self):
 	tsk = self.create_task('utest', self.link_task.outputs)
 	if getattr(self, 'ut_str', None):
 		self.ut_run, lst = Task.compile_fun(self.ut_str, shell=getattr(self, 'ut_shell', False))
-		tsk.env['UT_STR'] = self.ut_str
-		tsk.vars = lst + tsk.vars + ['UT_STR']
+		tsk.vars = tsk.vars + lst
+		self.env.append_value('UT_DEPS', self.ut_str)
 
 	self.handle_ut_cwd('ut_cwd')
 
@@ -139,6 +140,10 @@ def make_test(self):
 
 	if not hasattr(self, 'ut_cmd'):
 		self.ut_cmd = getattr(Options.options, 'testcmd', False)
+		self.env.append_value('UT_DEPS', str(self.ut_cmd))
+
+	self.env.append_value('UT_DEPS', self.ut_paths)
+	self.env.append_value('UT_DEPS', ['%r%r' % (key, self.ut_env[key]) for key in self.ut_env])
 
 @taskgen_method
 def add_test_results(self, tup):
@@ -160,7 +165,7 @@ class utest(Task.Task):
 	"""
 	color = 'PINK'
 	after = ['vnum', 'inst']
-	vars = []
+	vars = ['UT_DEPS']
 
 	def runnable_status(self):
 		"""
