@@ -17,9 +17,10 @@ The following environment variables may be set:
     export WAFCACHE=http://localhost:8080/files/
     in that case, GET/POST requests are made to urls of the form
     http://localhost:8080/files/000000000/0 (cache management is then up to the server)
-  - GCS or S3 bucket
-    gs://my-bucket/
-    s3://my-bucket/
+  - GCS or S3 or MINIO bucket
+    gs://my-bucket/    (uses gsutil command line tool)
+    s3://my-bucket/    (uses aws command line tool)
+    minio://my-bucket/ (uses mc command line tool)
 * WAFCACHE_NO_PUSH: if set, disables pushing to the cache
 * WAFCACHE_VERBOSITY: if set, displays more detailed cache operations
 
@@ -452,8 +453,10 @@ class bucket_cache(object):
 	def bucket_copy(self, source, target):
 		if CACHE_DIR.startswith('s3://'):
 			cmd = ['aws', 's3', 'cp', source, target]
-		else:
+		elif CACHE_DIR.startswith('gs://'):
 			cmd = ['gsutil', 'cp', source, target]
+		else:
+			cmd = ['mc', 'cp', source, target]
 		proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out, err = proc.communicate()
 		if proc.returncode:
@@ -511,7 +514,9 @@ def loop(service):
 	sys.stdout.flush()
 
 if __name__ == '__main__':
-	if CACHE_DIR.startswith('s3://') or CACHE_DIR.startswith('gs://'):
+	if CACHE_DIR.startswith('s3://') or CACHE_DIR.startswith('gs://') or CACHE_DIR.startswith('minio://'):
+		if CACHE_DIR.startswith('minio://'):
+			CACHE_DIR = CACHE_DIR[8:]   # minio doesn't need the protocol part, uses config aliases
 		service = bucket_cache()
 	elif CACHE_DIR.startswith('http'):
 		service = netcache()
