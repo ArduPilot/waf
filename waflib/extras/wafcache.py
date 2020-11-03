@@ -18,9 +18,9 @@ The following environment variables may be set:
     in that case, GET/POST requests are made to urls of the form
     http://localhost:8080/files/000000000/0 (cache management is then up to the server)
   - GCS or S3 or MINIO bucket
-    gs://my-bucket/    (uses gsutil command line tool)
-    s3://my-bucket/    (uses aws command line tool)
-    minio://my-bucket/ (uses mc command line tool)
+    gs://my-bucket/    (uses gsutil command line tool or WAFCACHE_CMD)
+    s3://my-bucket/    (uses aws command line tool or WAFCACHE_CMD)
+    minio://my-bucket/ (uses mc command line tool or WAFCACHE_CMD)
 * WAFCACHE_NO_PUSH: if set, disables pushing to the cache
 * WAFCACHE_VERBOSITY: if set, displays more detailed cache operations
 
@@ -31,6 +31,12 @@ File cache specific options:
 * WAFCACHE_EVICT_MAX_BYTES: maximum amount of cache size in bytes (10GB)
 * WAFCACHE_EVICT_INTERVAL_MINUTES: minimum time interval to try
                                    and trim the cache (3 minutess)
+
+Bucket cache specific options:
+* WAFCACHE_CMD: command to use to access bucket cache. It must contain
+                exactly two %s, assuming first is substituted by source
+                and second by target (see defaults for examples)
+
 Usage::
 
 	def build(bld):
@@ -42,7 +48,7 @@ To troubleshoot::
 	waf clean build --zones=wafcache
 """
 
-import atexit, base64, errno, fcntl, getpass, os, shutil, sys, time, traceback, urllib3
+import atexit, base64, errno, fcntl, getpass, os, shutil, sys, time, traceback, urllib3, shlex
 try:
 	import subprocess32 as subprocess
 except ImportError:
@@ -60,6 +66,18 @@ EVICT_MAX_BYTES = int(os.environ.get('WAFCACHE_EVICT_MAX_BYTES', 10**10))
 WAFCACHE_NO_PUSH = 1 if os.environ.get('WAFCACHE_NO_PUSH') else 0
 WAFCACHE_VERBOSITY = 1 if os.environ.get('WAFCACHE_VERBOSITY') else 0
 OK = "ok"
+
+WAFCACHE_CMD = os.environ.get('WAFCACHE_CMD', None)
+
+# Some defaults if WAFCACHE_CMD is not passed
+if not WAFCACHE_CMD:
+	if CACHE_DIR.startswith('s3://'):
+		WAFCACHE_CMD = 'aws s3 cp "%s" "%s"'
+	elif CACHE_DIR.startswith('gs://'):
+		WAFCACHE_CMD = 'gsutil cp "%s" "%s"'
+	else:
+		WAFCACHE_CMD = 'mc cp "%s" "%s"'
+
 
 try:
 	import cPickle
@@ -451,12 +469,7 @@ class fcache(object):
 
 class bucket_cache(object):
 	def bucket_copy(self, source, target):
-		if CACHE_DIR.startswith('s3://'):
-			cmd = ['aws', 's3', 'cp', source, target]
-		elif CACHE_DIR.startswith('gs://'):
-			cmd = ['gsutil', 'cp', source, target]
-		else:
-			cmd = ['mc', 'cp', source, target]
+		cmd = shlex.split(WAFCACHE_CMD % (source, target))
 		proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		out, err = proc.communicate()
 		if proc.returncode:
