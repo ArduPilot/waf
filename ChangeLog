@@ -1,3 +1,17 @@
+NEW IN WAF 2.0.21
+-----------------
+* Set the default --msvc_version from VSCMD_VER if present #2299
+* Force unit-test reruns on ut_str, ut_cmd or ut_path changes #2302
+* Describe Qt5's library detection #2288
+* Introduce conf.env.ASMDEFINES_ST to enable assembly-specific define flags
+* Update extras/xcode6 to Python3 #2290
+* Enable parameter "always" in extras/doxygen #2292
+* Fix extras/c_dumbpreproc as it was previously broken
+* Fix extras/gccdeps and extras/msvcdeps on header renaming #2293
+* Improve extras/msvcdeps debug outputs and flags #2287 #2291
+* Add add MCST Elbrus CPU detection in c config #2297
+* Add minio object copies to extras/wafcache #2304
+
 NEW IN WAF 2.0.20
 -----------------
 * Detect -flto and -fno-lto in parse_config #2281
