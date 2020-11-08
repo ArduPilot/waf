@@ -16,13 +16,19 @@ The following environment variables may be set:
   - URL to a cache server, for example:
     export WAFCACHE=http://localhost:8080/files/
     in that case, GET/POST requests are made to urls of the form
-    http://localhost:8080/files/000000000/0 (cache management is then up to the server)
-  - GCS or S3 or MINIO bucket
+    http://localhost:8080/files/000000000/0 (cache management is delegated to the server)
+  - GCS, S3 or MINIO bucket
     gs://my-bucket/    (uses gsutil command line tool or WAFCACHE_CMD)
     s3://my-bucket/    (uses aws command line tool or WAFCACHE_CMD)
     minio://my-bucket/ (uses mc command line tool or WAFCACHE_CMD)
-* WAFCACHE_CMD: custom upload/download command, for example:
-                WAFCACHE_CMD="gsutil cp %{SRC} %{TGT}"
+* WAFCACHE_CMD: bucket upload/download command, for example:
+    WAFCACHE_CMD="gsutil cp %{SRC} %{TGT}"
+  Note that the WAFCACHE bucket value is used for the source or destination
+  depending on the operation (upload or download). For example, with:
+    WAFCACHE="gs://mybucket/"
+  the following commands may be run:
+    gsutil cp build/myprogram  gs://mybucket/aa/aaaaa/1
+    gsutil cp gs://mybucket/bb/bbbbb/2 build/somefile
 * WAFCACHE_NO_PUSH: if set, disables pushing to the cache
 * WAFCACHE_VERBOSITY: if set, displays more detailed cache operations
 
