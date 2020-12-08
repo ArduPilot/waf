@@ -117,11 +117,17 @@ def put_files_cache(self):
 	if WAFCACHE_NO_PUSH or getattr(self, 'cached', None) or not self.outputs:
 		return
 
+	files_from = []
+	for node in self.outputs:
+		path = node.abspath()
+		if not os.path.isfile(path):
+			return
+		files_from.append(path)
+
 	bld = self.generator.bld
 	sig = self.signature()
 	ssig = Utils.to_hex(self.uid() + sig)
 
-	files_from = [node.abspath() for node in self.outputs]
 	err = cache_command(ssig, files_from, [])
 
 	if err.startswith(OK):
@@ -193,6 +199,10 @@ def make_cached(cls):
 	if getattr(cls, 'nocache', None) or getattr(cls, 'has_cache', False):
 		return
 
+	full_name = "%s.%s" % (cls.__module__, cls.__name__)
+	if full_name in ('waflib.Tools.ccroot.vnum', 'waflib.Build.inst'):
+		return
+
 	m1 = getattr(cls, 'run', None)
 	def run(self):
 		if getattr(self, 'nocache', False):
@@ -208,9 +218,6 @@ def make_cached(cls):
 			return m2(self)
 		ret = m2(self)
 		self.put_files_cache()
-		if hasattr(self, 'chmod'):
-			for node in self.outputs:
-				os.chmod(node.abspath(), self.chmod)
 		return ret
 	cls.post_run = post_run
 	cls.has_cache = True
