@@ -378,8 +378,8 @@ def lru_evict():
 			try:
 				fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 			except EnvironmentError:
-				sys.stderr.write('another process is running!\n')
-				pass
+				if Logs.verbose:
+					Logs.debug('wafcache: another cleaning process is running')
 			else:
 				# now dow the actual cleanup
 				lru_trim()
