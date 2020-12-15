@@ -488,7 +488,7 @@ class bucket_cache(object):
 		out, err = proc.communicate()
 		if proc.returncode:
 			raise OSError('Error copy %r to %r using: %r (exit %r):\n  out:%s\n  err:%s' % (
-				source, target, cmd, proc.returncode, out.decode(), err.decode()))
+				source, target, cmd, proc.returncode, out.decode(errors='replace'), err.decode(errors='replace')))
 
 	def copy_to_cache(self, sig, files_from, files_to):
 		try:
