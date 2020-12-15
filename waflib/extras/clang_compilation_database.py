@@ -105,6 +105,7 @@ class ClangDbContext(Build.BuildContext):
 				for tsk in lst:
 					tup = tuple(y for y in [Task.classes.get(x) for x in ('c', 'cxx')] if y)
 					if isinstance(tsk, tup):
+						tsk.nocache = True
 						old_exec = tsk.exec_command
 						tsk.exec_command = exec_command
 						tsk.run()
