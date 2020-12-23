@@ -31,6 +31,7 @@ The following environment variables may be set:
     gsutil cp gs://mybucket/bb/bbbbb/2 build/somefile
 * WAFCACHE_NO_PUSH: if set, disables pushing to the cache
 * WAFCACHE_VERBOSITY: if set, displays more detailed cache operations
+* WAFCACHE_STATS: if set, displays cache usage statistics on exit
 
 File cache specific options:
   Files are copied using hard links by default; if the cache is located
@@ -69,6 +70,7 @@ EVICT_INTERVAL_MINUTES = int(os.environ.get('WAFCACHE_EVICT_INTERVAL_MINUTES', 3
 EVICT_MAX_BYTES = int(os.environ.get('WAFCACHE_EVICT_MAX_BYTES', 10**10))
 WAFCACHE_NO_PUSH = 1 if os.environ.get('WAFCACHE_NO_PUSH') else 0
 WAFCACHE_VERBOSITY = 1 if os.environ.get('WAFCACHE_VERBOSITY') else 0
+WAFCACHE_STATS = 1 if os.environ.get('WAFCACHE_STATS') else 0
 OK = "ok"
 
 re_waf_cmd = re.compile('(?P<src>%{SRC})|(?P<tgt>%{TGT})')
@@ -93,6 +95,9 @@ def can_retrieve_cache(self):
 	sig = self.signature()
 	ssig = Utils.to_hex(self.uid() + sig)
 
+	if WAFCACHE_STATS:
+		self.generator.bld.cache_reqs += 1
+
 	files_to = [node.abspath() for node in self.outputs]
 	err = cache_command(ssig, [], files_to)
 	if err.startswith(OK):
@@ -100,6 +105,8 @@ def can_retrieve_cache(self):
 			Logs.pprint('CYAN', '  Fetched %r from cache' % files_to)
 		else:
 			Logs.debug('wafcache: fetched %r from cache', files_to)
+		if WAFCACHE_STATS:
+			self.generator.bld.cache_hits += 1
 	else:
 		if WAFCACHE_VERBOSITY:
 			Logs.pprint('YELLOW', '  No cache entry %s' % files_to)
@@ -135,6 +142,8 @@ def put_files_cache(self):
 			Logs.pprint('CYAN', '  Successfully uploaded %s to cache' % files_from)
 		else:
 			Logs.debug('wafcache: Successfully uploaded %r to cache', files_from)
+		if WAFCACHE_STATS:
+			self.generator.bld.cache_puts += 1
 	else:
 		if WAFCACHE_VERBOSITY:
 			Logs.pprint('RED', '  Error caching step results %s: %s' % (files_from, err))
@@ -263,6 +272,19 @@ def build(bld):
 	Build.BuildContext.hash_env_vars = hash_env_vars
 	for x in reversed(list(Task.classes.values())):
 		make_cached(x)
+
+	if WAFCACHE_STATS:
+		# Init counter for statistics and hook to print results at the end
+		bld.cache_reqs = bld.cache_hits = bld.cache_puts = 0
+
+		def printstats(bld):
+			hit_ratio = 0
+			if bld.cache_reqs > 0:
+				hit_ratio = (bld.cache_hits / bld.cache_reqs) * 100
+			Logs.pprint('CYAN', '  wafache stats: requests: %s, hits, %s, ratio: %.2f%%, writes %s' %
+					 (bld.cache_reqs, bld.cache_hits, hit_ratio, bld.cache_puts) )
+
+		bld.add_post_fun(printstats)
 
 def cache_command(sig, files_from, files_to):
 	"""
