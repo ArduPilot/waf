@@ -1,0 +1,43 @@
+from waflib.TaskGen import feature
+
+def configure(ctx):
+    ctx.load('clang_cl')
+    ctx.env.CFLAGS.extend(['/EHsc', '/O12', '/TC', '/GL', '/w', '/U __llvm__'])
+    for lib in ['msvcrt']:
+        ctx.check(
+            compiler='c',
+            lib=lib,
+            uselib_store='SYSTEM')
+    for lib in ['libhl']:
+        ctx.check(
+            compiler='c',
+            lib=lib,
+            use='HL',
+            uselib_store='HL')
+
+def build(ctx):
+    ctx.env.LINKFLAGS.extend(['/NODEFAULTLIB:libcmt'])
+    ctx.program(
+        source = ['waf/src/main.c'],
+        includes = [ctx.env.ROOT_INCLUDE_DIR],
+        target = 'app',
+        use = ['SYSTEM', 'HL'])
+
+@feature('cxxprogram', 'cprogram')
+def call_me_static(self):
+    attr_name = 'source'
+    attr = getattr(self, attr_name, [])
+    if len(attr):
+        setattr(self, attr_name, [])
+        for x in self.to_list(attr):
+            node = self.path.make_node(x)
+            tg = self.bld.get_tgen_by_name(node.name)
+            if not tg:
+                self.bld.fatal('Could not find a task generator by the name %r' % x)
+            tg.post()
+            for tsk in tg.tasks:
+                for out in tsk.outputs:
+                    if out.name.endswith('.c'):
+                        self.create_compiled_task('c', out)
+        if not self.compiled_tasks:
+            self.fatal('Could not find a source file for for %r' % self.name)

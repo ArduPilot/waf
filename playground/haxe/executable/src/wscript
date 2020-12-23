@@ -1,0 +1,13 @@
+def configure(ctx):
+    ctx.load('haxe')
+    ctx.ensure_lix_pkg(
+        compiler='hx',
+        libs=['hashlink'],
+        uselib_store='HLR')
+
+def build(ctx):
+    ctx.haxe(
+        source = 'main.hxml',
+        res = ctx.env.ROOT_RES_DIR,
+        target = 'main.c',
+        use = ['HLR'])
