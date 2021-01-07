@@ -35,7 +35,7 @@ def build(bld):
 	# native application
 	bld.program(
 		source = 'test.cpp',
-		target = 'testapp')
+		target = 'testapp-native')
 
 	# cuda application
 	bld.program(
