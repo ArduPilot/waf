@@ -281,7 +281,7 @@ def build(bld):
 			hit_ratio = 0
 			if bld.cache_reqs > 0:
 				hit_ratio = (bld.cache_hits / bld.cache_reqs) * 100
-			Logs.pprint('CYAN', '  wafache stats: requests: %s, hits, %s, ratio: %.2f%%, writes %s' %
+			Logs.pprint('CYAN', '  wafcache stats: requests: %s, hits, %s, ratio: %.2f%%, writes %s' %
 					 (bld.cache_reqs, bld.cache_hits, hit_ratio, bld.cache_puts) )
 
 		bld.add_post_fun(printstats)
