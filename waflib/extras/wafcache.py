@@ -349,7 +349,10 @@ def lru_trim():
 
 				size = 0
 				for fname in os.listdir(path):
-					size += os.lstat(os.path.join(path, fname)).st_size
+					try:
+						size += os.lstat(os.path.join(path, fname)).st_size
+					except OSError:
+						pass
 				lst.append((os.stat(path).st_mtime, size, path))
 
 	lst.sort(key=lambda x: x[0])
@@ -360,7 +363,7 @@ def lru_trim():
 		_, tmp_size, path = lst.pop()
 		tot -= tmp_size
 
-		tmp = path + '.tmp'
+		tmp = path + '.remove'
 		try:
 			shutil.rmtree(tmp)
 		except OSError:
@@ -368,12 +371,12 @@ def lru_trim():
 		try:
 			os.rename(path, tmp)
 		except OSError:
-			sys.stderr.write('Could not rename %r to %r' % (path, tmp))
+			sys.stderr.write('Could not rename %r to %r\n' % (path, tmp))
 		else:
 			try:
 				shutil.rmtree(tmp)
 			except OSError:
-				sys.stderr.write('Could not remove %r' % tmp)
+				sys.stderr.write('Could not remove %r\n' % tmp)
 	sys.stderr.write("Cache trimmed: %r bytes in %r folders left\n" % (tot, len(lst)))
 
 
@@ -472,7 +475,10 @@ class fcache(object):
 		else:
 			# attempt trimming if caching was successful:
 			# we may have things to trim!
-			lru_evict()
+			try:
+				lru_evict()
+			except Exception:
+				return traceback.format_exc()
 		return OK
 
 	def copy_from_cache(self, sig, files_from, files_to):
