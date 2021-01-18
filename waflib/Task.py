@@ -1080,7 +1080,7 @@ def compile_fun_shell(line):
 			if meth:
 				app('tsk.inputs%s' % meth)
 			else:
-				app('" ".join([a.path_from(cwdx) for a in tsk.inputs])')
+				app('" ".join([a.abspath() for a in tsk.inputs])')
 		elif var == 'TGT':
 			if meth:
 				app('tsk.outputs%s' % meth)
@@ -1091,7 +1091,7 @@ def compile_fun_shell(line):
 				add_dvar(var)
 				m = meth[1:]
 				if m == 'SRC':
-					m = '[a.path_from(cwdx) for a in tsk.inputs]'
+					m = '[a.abspath() for a in tsk.inputs]'
 				elif m == 'TGT':
 					m = '[a.path_from(cwdx) for a in tsk.outputs]'
 				elif re_novar.match(m):
@@ -1161,7 +1161,7 @@ def compile_fun_noshell(line):
 				if code:
 					app('[tsk.inputs%s]' % code)
 				else:
-					app('[a.path_from(cwdx) for a in tsk.inputs]')
+					app('[a.abspath() for a in tsk.inputs]')
 			elif var == 'TGT':
 				if code:
 					app('[tsk.outputs%s]' % code)
