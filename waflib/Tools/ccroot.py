@@ -120,8 +120,7 @@ def apply_incpaths(self):
 
 	lst = self.to_incnodes(self.to_list(getattr(self, 'includes', [])) + self.env.INCLUDES)
 	self.includes_nodes = lst
-	cwd = self.get_cwd()
-	self.env.INCPATHS = [x.path_from(cwd) for x in lst]
+	self.env.INCPATHS = [x.abspath() for x in lst]
 
 class link_task(Task.Task):
 	"""
@@ -389,7 +388,7 @@ def process_use(self):
 			if var == 'LIB' or y.tmp_use_stlib or x in names:
 				self.env.append_value(var, [y.target[y.target.rfind(os.sep) + 1:]])
 				self.link_task.dep_nodes.extend(y.link_task.outputs)
-				tmp_path = y.link_task.outputs[0].parent.path_from(self.get_cwd())
+				tmp_path = y.link_task.outputs[0].parent.abspath()
 				self.env.append_unique(var + 'PATH', [tmp_path])
 		else:
 			if y.tmp_use_objects:
@@ -514,7 +513,7 @@ def apply_implib(self):
 		if not node:
 			raise Errors.WafError('invalid def file %r' % self.defs)
 		if self.env.def_PATTERN:
-			self.env.append_value('LINKFLAGS', self.env.def_PATTERN % node.path_from(self.get_cwd()))
+			self.env.append_value('LINKFLAGS', self.env.def_PATTERN % node.abspath())
 			self.link_task.dep_nodes.append(node)
 		else:
 			# gcc for windows takes *.def file as input without any special flag
