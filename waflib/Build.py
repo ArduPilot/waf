@@ -1068,7 +1068,7 @@ class inst(Task.Task):
 		if not os.path.isabs(dest):
 			dest = os.path.join(self.env.PREFIX, dest)
 		if destdir and Options.options.destdir:
-			dest = os.path.join(Options.options.destdir, os.path.splitdrive(dest)[1].lstrip(os.sep))
+			dest = Options.options.destdir.rstrip(os.sep) + os.sep + os.path.splitdrive(dest)[1].lstrip(os.sep)
 		return dest
 
 	def copy_fun(self, src, tgt):
