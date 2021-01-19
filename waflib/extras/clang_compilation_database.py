@@ -96,6 +96,12 @@ class ClangDbContext(Build.BuildContext):
 						tsk.runnable_status()
 						if hasattr(tsk, 'more_tasks'):
 							lst.extend(tsk.more_tasks)
+					# Not all dynamic tasks can be processed, in some cases
+					# one may have to call the method "run()" like this:
+					#elif tsk.__class__.__name__ == 'src2c':
+					#	tsk.run()
+					#	if hasattr(tsk, 'more_tasks'):
+					#		lst.extend(tsk.more_tasks)
 
 					tup = tuple(y for y in [Task.classes.get(x) for x in ('c', 'cxx')] if y)
 					if isinstance(tsk, tup):
