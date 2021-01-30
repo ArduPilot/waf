@@ -1,3 +1,16 @@
+NEW IN WAF 2.0.22
+-----------------
+* Fix stdin propagation with faulty vcvarsall scripts #2315
+* Enable mixing Unix-style paths with destdir on Windows platforms #2337
+* Fix shell escaping unit test parameters #2314
+* Improve extras/clang_compilation_database and extras/swig compatibility #2336
+* Propagate C++ flags to the Cuda compiler in extras/cuda #2311
+* Fix detection of Qt 5.0.0 (preparation for Qt6) #2331
+* Enable Haxe processing #2308
+* Fix regression in MACOSX_DEPLOYMENT_TARGET caused by distutils #2330
+* Fix extras/wafcache concurrent trimming issues #2312
+* Fix extras/wafcache symlink handling #2327
+
 NEW IN WAF 2.0.21
 -----------------
 * Set the default --msvc_version from VSCMD_VER if present #2299
