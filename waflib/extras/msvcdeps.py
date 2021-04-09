@@ -112,9 +112,9 @@ def post_run(self):
 	if getattr(self, 'cached', None):
 		return Task.Task.post_run(self)
 
-	bld = self.generator.bld
-	unresolved_names = []
 	resolved_nodes = []
+	unresolved_names = []
+	bld = self.generator.bld
 
 	# Dynamically bind to the cache
 	try:
@@ -147,10 +147,13 @@ def post_run(self):
 					continue
 
 			if id(node) == id(self.inputs[0]):
-				# Self-dependency
+				# ignore the source file, it is already in the dependencies
+				# this way, successful config tests may be retrieved from the cache
 				continue
 
 			resolved_nodes.append(node)
+
+	Logs.debug('deps: msvcdeps for %s returned %s', self, resolved_nodes)
 
 	bld.node_deps[self.uid()] = resolved_nodes
 	bld.raw_deps[self.uid()] = unresolved_names
