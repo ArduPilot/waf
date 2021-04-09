@@ -29,14 +29,6 @@ if not c_preproc.go_absolute:
 # Third-party tools are allowed to add extra names in here with append()
 supported_compilers = ['gas', 'gcc', 'icc', 'clang']
 
-def scan(self):
-	if not self.__class__.__name__ in self.env.ENABLE_GCCDEPS:
-		return super(self.derived_gccdeps, self).scan()
-
-	resolved_nodes = self.generator.bld.node_deps.get(self.uid(), [])
-	unresolved_names = []
-	return (resolved_nodes, unresolved_names)
-
 re_o = re.compile(r"\.o$")
 re_splitter = re.compile(r'(?<!\\)\s+') # split by space, except when spaces are escaped
 
@@ -161,6 +153,14 @@ def post_run(self):
 		pass
 
 	Task.Task.post_run(self)
+
+def scan(self):
+	if not self.__class__.__name__ in self.env.ENABLE_GCCDEPS:
+		return super(self.derived_gccdeps, self).scan()
+
+	resolved_nodes = self.generator.bld.node_deps.get(self.uid(), [])
+	unresolved_names = []
+	return (resolved_nodes, unresolved_names)
 
 def sig_implicit_deps(self):
 	if not self.__class__.__name__ in self.env.ENABLE_GCCDEPS:
