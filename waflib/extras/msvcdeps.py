@@ -32,7 +32,6 @@ from waflib.Tools import c_preproc, c, cxx, msvc
 from waflib.TaskGen import feature, before_method
 
 lock = threading.Lock()
-nodes = {} # Cache the path -> Node lookup
 
 PREPROCESSOR_FLAG = '/showIncludes'
 INCLUDE_PATTERN = 'Note: including file:'
