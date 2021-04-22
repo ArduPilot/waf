@@ -65,7 +65,12 @@ def get_correct_path_case(base_path, path):
 	for part in components:
 		part = part.lower()
 		search_path = os.path.join(base_path, corrected_path)
-		for item in os.listdir(search_path):
+		if part == '..':
+			corrected_path = os.path.join(corrected_path, part)
+			search_path = os.path.normpath(search_path)
+			continue
+
+		for item in sorted(os.listdir(search_path)):
 			if item.lower() == part:
 				corrected_path = os.path.join(corrected_path, item)
 				break
