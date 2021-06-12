@@ -635,7 +635,7 @@ def process_rule(self):
 				for x in self.generator.to_list(getattr(self.generator, 'deps', None)):
 					node = self.generator.path.find_resource(x)
 					if not node:
-						self.generator.bld.fatal('Could not find %r (was it declared?)' % x)
+						self.generator.bld.fatal('Could not find %r in %r (was it declared?)' % (x, self.generator))
 					nodes.append(node)
 				return [nodes, []]
 			cls.scan = scan
