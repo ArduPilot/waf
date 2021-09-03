@@ -133,9 +133,11 @@ class eclipse(Build.BuildContext):
 					path = p.path_from(self.srcnode)
 
 					if (path.startswith("/")):
-						cpppath.append(path)
+						if path not in cpppath:
+							cpppath.append(path)
 					else:
-						workspace_includes.append(path)
+						if path not in workspace_includes:
+							workspace_includes.append(path)
 
 					if is_cc and path not in source_dirs:
 						source_dirs.append(path)
