@@ -783,7 +783,7 @@ def set_qt5_libs_to_check(self):
 			pat = self.env.cxxstlib_PATTERN
 		if Utils.unversioned_sys_platform() == 'darwin':
 			pat = r"%s\.framework"
-		re_qt = re.compile(pat % 'Qt5?(?P<name>\\D+)' + '$')
+		re_qt = re.compile(pat % 'Qt5?(?P<name>\\w+)' + '$')
 		for x in dirlst:
 			m = re_qt.match(x)
 			if m:
