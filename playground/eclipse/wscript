@@ -54,6 +54,7 @@ def options(opt):
 
 
 def configure(conf):
+	conf.env.ECLIPSE_EXTRA_TARGETS = ['test', 'lint', 'foo --bar']
 	conf.load('eclipse')
 	# We recurse configurations in our submodules
 	conf.recurse(module_list)

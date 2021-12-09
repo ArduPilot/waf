@@ -10,6 +10,9 @@ Usage:
 def options(opt):
 	opt.load('eclipse')
 
+To add additional targets beside standard ones (configure, dist, install, check)
+the environment ECLIPSE_EXTRA_TARGETS can be set (ie. to ['test', 'lint', 'docs'])
+
 $ waf configure eclipse
 """
 
@@ -400,6 +403,8 @@ class eclipse(Build.BuildContext):
 		addTargetWrap('dist', False)
 		addTargetWrap('install', False)
 		addTargetWrap('check', False)
+		for addTgt in getattr(self.env, 'ECLIPSE_EXTRA_TARGETS', []):
+			addTargetWrap(addTgt, False)
 
 		storageModule = self.add(doc, cproject, 'storageModule',
 							{'moduleId': 'cdtBuildSystem',
