@@ -403,7 +403,7 @@ class eclipse(Build.BuildContext):
 		addTargetWrap('dist', False)
 		addTargetWrap('install', False)
 		addTargetWrap('check', False)
-		for addTgt in getattr(self.env, 'ECLIPSE_EXTRA_TARGETS', []):
+		for addTgt in self.env.ECLIPSE_EXTRA_TARGETS or []:
 			addTargetWrap(addTgt, False)
 
 		storageModule = self.add(doc, cproject, 'storageModule',
