@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import os, sys, imp, time
+import os, sys, time
 from waflib import Context, Options, Configure, Utils, Logs, TaskGen, Task, Build, ConfigSet
 import waflib.Tools.c
 

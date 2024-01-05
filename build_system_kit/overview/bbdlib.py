@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
-import os, sys, imp
+import os, sys
+import types
 from waflib import Context, Options, Configure, Utils, Logs
 
 def start(cwd, version, wafdir):
@@ -15,7 +16,7 @@ def start(cwd, version, wafdir):
 	Context.waf_dir = wafdir
 	Context.top_dir = Context.run_dir = cwd
 	Context.out_dir = os.path.join(cwd, 'build')
-	Context.g_module = imp.new_module('wscript')
+	Context.g_module = types.ModuleType('wscript')
 	Context.g_module.root_path = os.path.join(cwd, 'bbit')
 	Context.Context.recurse = \
 		lambda x, y: getattr(Context.g_module, x.cmd or x.fun, Utils.nada)(x)
