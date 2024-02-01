@@ -4,14 +4,13 @@
 
 "cuda"
 
-import os
 from waflib import Task
 from waflib.TaskGen import extension
 from waflib.Tools import ccroot, c_preproc
 from waflib.Configure import conf
 
 class cuda(Task.Task):
-	run_str = '${NVCC} ${CUDAFLAGS} ${CXXFLAGS} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${CPPPATH_ST:INCPATHS} ${DEFINES_ST:DEFINES} ${CXX_SRC_F}${SRC} ${CXX_TGT_F} ${TGT}'
+	run_str = '${NVCC} ${CUDAFLAGS} ${NVCCFLAGS_ST:CXXFLAGS} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${CPPPATH_ST:INCPATHS} ${DEFINES_ST:DEFINES} ${CXX_SRC_F}${SRC} ${CXX_TGT_F} ${TGT}'
 	color   = 'GREEN'
 	ext_in  = ['.h']
 	vars    = ['CCDEPS']
@@ -22,9 +21,18 @@ class cuda(Task.Task):
 def c_hook(self, node):
 	return self.create_compiled_task('cuda', node)
 
+@extension('.cpp')
+def cxx_hook(self, node):
+	# override processing for one particular type of file
+	if getattr(self, 'cuda', False):
+		return self.create_compiled_task('cuda', node)
+	else:
+		return self.create_compiled_task('cxx', node)
+
 def configure(conf):
 	conf.find_program('nvcc', var='NVCC')
 	conf.find_cuda_libs()
+	conf.env.NVCCFLAGS_ST = "--compiler-options=%s"
 
 @conf
 def find_cuda_libs(self):
@@ -43,7 +51,7 @@ def find_cuda_libs(self):
 	_includes = node and node.abspath() or ''
 
 	_libpath = []
-	for x in ('lib64', 'lib'):
+	for x in ('lib64', 'lib64/stubs', 'lib', 'lib/stubs'):
 		try:
 			_libpath.append(d.find_node(x).abspath())
 		except:

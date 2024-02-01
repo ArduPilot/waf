@@ -78,3 +78,5 @@ def build(bld):
 		target = 'mod/two_mods')
 
 	bld.recurse('typemap')
+	if bld.env.FC_NAME == 'GFORTRAN' and int(bld.env.FC_VERSION[0]) >= 6:
+		bld.recurse('submodules')

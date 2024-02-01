@@ -73,7 +73,7 @@ def ant_matcher(s, ignorecase):
 			if k == '**':
 				accu.append(k)
 			else:
-				k = k.replace('.', '[.]').replace('*','.*').replace('?', '.').replace('+', '\\+')
+				k = k.replace('.', '[.]').replace('*', '.*').replace('?', '.').replace('+', '\\+')
 				k = '^%s$' % k
 				try:
 					exp = re.compile(k, flags=reflags)
@@ -606,7 +606,6 @@ class Node(object):
 		:rtype: iterator
 		"""
 		dircont = self.listdir()
-		dircont.sort()
 
 		try:
 			lst = set(self.children.keys())

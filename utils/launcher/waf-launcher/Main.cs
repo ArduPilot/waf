@@ -91,7 +91,7 @@ namespace waflauncher
 			Console.WriteLine ("python2.7 downloaded to " + filename);
 
 			Console.WriteLine ("Installing python");
-			//filename must be qouted or else msiexec will fail
+			//filename must be quoted or else msiexec will fail
 			exec("msiexec","/qn","/i","\"" +filename + "\"");
 			Console.WriteLine ("Python is now installed");
 		}

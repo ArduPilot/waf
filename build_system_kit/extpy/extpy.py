@@ -27,7 +27,7 @@ class Context(mod.Context):
 				cache[node] = True
 				self.pre_recurse(node)
 				try:
-					function_code = node.read('rU')
+					function_code = node.read('r')
 					exec(compile(function_code, node.abspath(), 'exec'), self.exec_dict)
 				finally:
 					self.post_recurse(node)

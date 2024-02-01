@@ -19,7 +19,7 @@ def configure(conf):
 	conf.check_python_version((2,7,4))	
 
 def build(bld):
-	# Demostrates mixed usage of py and pyqt5 module, and tests also install_path and install_from
+	# Demonstrates mixed usage of py and pyqt5 module, and tests also install_path and install_from
 	# (since generated files go into build it has to be reset inside the pyqt5 tool)
 	bld(features="py pyqt5", source="src/sample.py src/firstgui.ui",  install_path="${PREFIX}/play/", install_from="src/") 
 

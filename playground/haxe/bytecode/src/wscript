@@ -1,0 +1,7 @@
+def configure(ctx):
+    ctx.load('haxe')
+
+def build(ctx):
+    ctx.haxe(
+        source = 'main.hxml',
+        target = 'main.hl')

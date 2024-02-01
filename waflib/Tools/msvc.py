@@ -99,7 +99,13 @@ all_icl_platforms = [ ('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86'),
 """List of icl platforms"""
 
 def options(opt):
-	opt.add_option('--msvc_version', type='string', help = 'msvc version, eg: "msvc 10.0,msvc 9.0"', default='')
+	default_ver = ''
+	vsver = os.getenv('VSCMD_VER')
+	if vsver:
+		m = re.match(r'(^\d+\.\d+).*', vsver)
+		if m:
+			default_ver = 'msvc %s' % m.group(1)
+	opt.add_option('--msvc_version', type='string', help = 'msvc version, eg: "msvc 10.0,msvc 9.0"', default=default_ver)
 	opt.add_option('--msvc_targets', type='string', help = 'msvc targets, eg: "x64,arm"', default='')
 	opt.add_option('--no-msvc-lazy', action='store_false', help = 'lazily check msvc target environments', default=True, dest='msvc_lazy')
 
@@ -187,7 +193,7 @@ echo PATH=%%PATH%%
 echo INCLUDE=%%INCLUDE%%
 echo LIB=%%LIB%%;%%LIBPATH%%
 """ % (vcvars,target))
-	sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
+	sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()], stdin=getattr(Utils.subprocess, 'DEVNULL', None))
 	lines = sout.splitlines()
 
 	if not lines[0]:
@@ -281,7 +287,7 @@ def gather_wince_supported_platforms():
 
 def gather_msvc_detected_versions():
 	#Detected MSVC versions!
-	version_pattern = re.compile('^(\d\d?\.\d\d?)(Exp)?$')
+	version_pattern = re.compile(r'^(\d\d?\.\d\d?)(Exp)?$')
 	detected_versions = []
 	for vcver,vcvar in (('VCExpress','Exp'), ('VisualStudio','')):
 		prefix = 'SOFTWARE\\Wow6432node\\Microsoft\\' + vcver
@@ -367,7 +373,7 @@ def gather_wsdk_versions(conf, versions):
 	:param versions: list to modify
 	:type versions: list
 	"""
-	version_pattern = re.compile('^v..?.?\...?.?')
+	version_pattern = re.compile(r'^v..?.?\...?.?')
 	try:
 		all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\\Wow6432node\\Microsoft\\Microsoft SDKs\\Windows')
 	except OSError:
@@ -525,7 +531,7 @@ def gather_icl_versions(conf, versions):
 	:param versions: list to modify
 	:type versions: list
 	"""
-	version_pattern = re.compile('^...?.?\....?.?')
+	version_pattern = re.compile(r'^...?.?\....?.?')
 	try:
 		all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\\Wow6432node\\Intel\\Compilers\\C++')
 	except OSError:
@@ -579,7 +585,7 @@ def gather_intel_composer_versions(conf, versions):
 	:param versions: list to modify
 	:type versions: list
 	"""
-	version_pattern = re.compile('^...?.?\...?.?.?')
+	version_pattern = re.compile(r'^...?.?\...?.?.?')
 	try:
 		all_versions = Utils.winreg.OpenKey(Utils.winreg.HKEY_LOCAL_MACHINE, 'SOFTWARE\\Wow6432node\\Intel\\Suites')
 	except OSError:
@@ -683,7 +689,7 @@ def find_lt_names_msvc(self, libname, is_static=False):
 				if not is_static and ltdict.get('library_names', ''):
 					dllnames=ltdict['library_names'].split()
 					dll=dllnames[0].lower()
-					dll=re.sub('\.dll$', '', dll)
+					dll=re.sub(r'\.dll$', '', dll)
 					return (lt_libdir, dll, False)
 				elif ltdict.get('old_library', ''):
 					olib=ltdict['old_library']
@@ -700,7 +706,7 @@ def find_lt_names_msvc(self, libname, is_static=False):
 @conf
 def libname_msvc(self, libname, is_static=False):
 	lib = libname.lower()
-	lib = re.sub('\.lib$','',lib)
+	lib = re.sub(r'\.lib$','',lib)
 
 	if lib in g_msvc_systemlibs:
 		return lib
@@ -747,11 +753,11 @@ def libname_msvc(self, libname, is_static=False):
 		for libn in libnames:
 			if os.path.exists(os.path.join(path, libn)):
 				Logs.debug('msvc: lib found: %s', os.path.join(path,libn))
-				return re.sub('\.lib$', '',libn)
+				return re.sub(r'\.lib$', '',libn)
 
 	#if no lib can be found, just return the libname as msvc expects it
 	self.fatal('The library %r could not be found' % libname)
-	return re.sub('\.lib$', '', libname)
+	return re.sub(r'\.lib$', '', libname)
 
 @conf
 def check_lib_msvc(self, libname, is_static=False, uselib_store=None):
@@ -969,7 +975,7 @@ def apply_flags_msvc(self):
 	if not is_static:
 		for f in self.env.LINKFLAGS:
 			d = f.lower()
-			if d[1:] == 'debug':
+			if d[1:] in ('debug', 'debug:full', 'debug:fastlink'):
 				pdbnode = self.link_task.outputs[0].change_ext('.pdb')
 				self.link_task.outputs.append(pdbnode)
 

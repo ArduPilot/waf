@@ -57,7 +57,23 @@ A few options (--qt{dir,bin,...}) and environment variables
 (QT5_{ROOT,DIR,MOC,UIC,XCOMPILE}) allow finer tuning of the tool,
 tool path selection, etc; please read the source for more info.
 
-The detection uses pkg-config on Linux by default. To force static library detection use:
+The detection uses pkg-config on Linux by default. The list of
+libraries to be requested to pkg-config is formulated by scanning
+in the QTLIBS directory (that can be passed via --qtlibs or by
+setting the environment variable QT5_LIBDIR otherwise is derived
+by querying qmake for QT_INSTALL_LIBS directory) for shared/static
+libraries present.
+Alternatively the list of libraries to be requested via pkg-config
+can be set using the qt5_vars attribute, ie:
+
+      conf.qt5_vars = ['Qt5Core', 'Qt5Gui', 'Qt5Widgets', 'Qt5Test'];
+
+This can speed up configuration phase if needed libraries are
+known beforehand, can improve detection on systems with a
+sparse QT5 libraries installation (ie. NIX) and can improve
+detection of some header-only Qt modules (ie. Qt5UiPlugin).
+
+To force static library detection use:
 QT5_XCOMPILE=1 QT5_FORCE_STATIC=1 waf configure
 """
 
@@ -74,7 +90,7 @@ else:
 
 import os, sys, re
 from waflib.Tools import cxx
-from waflib import Task, Utils, Options, Errors, Context
+from waflib import Build, Task, Utils, Options, Errors, Context
 from waflib.TaskGen import feature, after_method, extension, before_method
 from waflib.Configure import conf
 from waflib import Logs
@@ -166,6 +182,10 @@ class qxx(Task.classes['cxx']):
 		"""
 		node = self.inputs[0]
 		bld = self.generator.bld
+
+		# skip on uninstall due to generated files
+		if bld.is_install == Build.UNINSTALL:
+			return
 
 		try:
 			# compute the signature once to know if there is a moc file to create
@@ -313,11 +333,11 @@ def apply_qt5(self):
 
 	The additional parameters are:
 
-	:param lang: list of translation files (\*.ts) to process
+	:param lang: list of translation files (\\*.ts) to process
 	:type lang: list of :py:class:`waflib.Node.Node` or string without the .ts extension
-	:param update: whether to process the C++ files to update the \*.ts files (use **waf --translate**)
+	:param update: whether to process the C++ files to update the \\*.ts files (use **waf --translate**)
 	:type update: bool
-	:param langname: if given, transform the \*.ts files into a .qrc files to include in the binary file
+	:param langname: if given, transform the \\*.ts files into a .qrc files to include in the binary file
 	:type langname: :py:class:`waflib.Node.Node` or string without the .qrc extension
 	"""
 	if getattr(self, 'lang', None):
@@ -462,6 +482,9 @@ def configure(self):
 
 	The detection uses the program ``pkg-config`` through :py:func:`waflib.Tools.config_c.check_cfg`
 	"""
+	if 'COMPILER_CXX' not in self.env:
+		self.fatal('No CXX compiler defined: did you forget to configure compiler_cxx first?')
+
 	self.find_qt5_binaries()
 	self.set_qt5_libs_dir()
 	self.set_qt5_libs_to_check()
@@ -474,12 +497,9 @@ def configure(self):
 	if not has_xml:
 		Logs.error('No xml.sax support was found, rcc dependencies will be incomplete!')
 
-	if 'COMPILER_CXX' not in self.env:
-		self.fatal('No CXX compiler defined: did you forget to configure compiler_cxx first?')
-
 	# Qt5 may be compiled with '-reduce-relocations' which requires dependent programs to have -fPIE or -fPIC?
-	frag = '#include <QApplication>\nint main(int argc, char **argv) {return 0;}\n'
-	uses = 'QT5CORE QT5WIDGETS QT5GUI'
+	frag = '#include <QMap>\nint main(int argc, char **argv) {QMap<int,int> m;return m.keys().size();}\n'
+	uses = 'QT5CORE'
 	for flag in [[], '-fPIE', '-fPIC', '-std=c++11' , ['-std=c++11', '-fPIE'], ['-std=c++11', '-fPIC']]:
 		msg = 'See if Qt files compile '
 		if flag:
@@ -495,7 +515,7 @@ def configure(self):
 
 	# FreeBSD does not add /usr/local/lib and the pkg-config files do not provide it either :-/
 	if Utils.unversioned_sys_platform() == 'freebsd':
-		frag = '#include <QApplication>\nint main(int argc, char **argv) { QApplication app(argc, argv); return NULL != (void*) (&app);}\n'
+		frag = '#include <QMap>\nint main(int argc, char **argv) {QMap<int,int> m;return m.keys().size();}\n'
 		try:
 			self.check(features='qt5 cxx cxxprogram', use=uses, fragment=frag, msg='Can we link Qt programs on FreeBSD directly?')
 		except self.errors.ConfigurationError:
@@ -546,7 +566,7 @@ def find_qt5_binaries(self):
 	# at the end, try to find qmake in the paths given
 	# keep the one with the highest version
 	cand = None
-	prev_ver = ['5', '0', '0']
+	prev_ver = ['0', '0', '0']
 	for qmk in ('qmake-qt5', 'qmake5', 'qmake'):
 		try:
 			qmake = self.find_program(qmk, path_list=paths)
@@ -560,7 +580,7 @@ def find_qt5_binaries(self):
 			else:
 				if version:
 					new_ver = version.split('.')
-					if new_ver > prev_ver:
+					if new_ver[0] == '5' and new_ver > prev_ver:
 						cand = qmake
 						prev_ver = new_ver
 
@@ -633,7 +653,7 @@ def set_qt5_libs_dir(self):
 		except Errors.WafError:
 			qtdir = self.cmd_and_log(env.QMAKE + ['-query', 'QT_INSTALL_PREFIX']).strip()
 			qtlibs = os.path.join(qtdir, 'lib')
-	self.msg('Found the Qt5 libraries in', qtlibs)
+	self.msg('Found the Qt5 library path', qtlibs)
 	env.QTLIBS = qtlibs
 
 @conf
@@ -762,9 +782,9 @@ def set_qt5_libs_to_check(self):
 		if self.environ.get('QT5_FORCE_STATIC'):
 			pat = self.env.cxxstlib_PATTERN
 		if Utils.unversioned_sys_platform() == 'darwin':
-			pat = "%s\.framework"
-		re_qt = re.compile(pat%'Qt5?(?P<name>.*)'+'$')
-		for x in dirlst:
+			pat = r"%s\.framework"
+		re_qt = re.compile(pat % 'Qt5?(?P<name>\\w+)' + '$')
+		for x in sorted(dirlst):
 			m = re_qt.match(x)
 			if m:
 				self.qt5_vars.append("Qt5%s" % m.group('name'))

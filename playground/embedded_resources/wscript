@@ -24,6 +24,7 @@ def build(bld):
 	 name='example',
 	 source='main.c',
 	 features='file_to_object',
+	 includes_nodes=[],
 	)
 	bld(
 	 target = 'app',

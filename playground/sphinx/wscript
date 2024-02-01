@@ -1,0 +1,10 @@
+"""Sphinx documentation wscript example
+"""
+
+
+def configure(cnf):
+    cnf.load('sphinx')
+
+
+def build(bld):
+    bld(features='sphinx', sphinx_source='src', sphinx_output_format='html')
