@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Thomas Nagy, 2007-2015 (ita)
 # Gustavo Carneiro (gjc), 2007

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Scott Newton, 2005 (scottn)
 # Thomas Nagy, 2006-2018 (ita)

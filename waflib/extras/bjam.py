@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 # per rosengren 2011
 
 from os import sep, readlink

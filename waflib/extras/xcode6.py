@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # XCode 3/XCode 4/XCode 6/Xcode 7 generator for Waf
 # Based on work by Nicolas Mercier 2011

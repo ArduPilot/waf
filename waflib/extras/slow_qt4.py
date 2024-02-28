@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 # Thomas Nagy, 2011 (ita)
 
 """

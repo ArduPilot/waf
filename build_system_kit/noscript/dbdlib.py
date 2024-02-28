@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 
 import os, sys, imp
 from waflib import Context, Options, Configure, Utils, Logs, TaskGen, Task

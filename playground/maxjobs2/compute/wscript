@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 
 # The following example shows how several build processes can collaborate
 # to stop spawning new processes when a special task of type K is executed

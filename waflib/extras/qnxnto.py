@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Jérôme Carretero 2011 (zougloub)
 # QNX neutrino compatibility functions

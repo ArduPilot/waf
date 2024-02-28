@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 
 # Replaces the default formatter by one which understands RVCT output and colorizes it.

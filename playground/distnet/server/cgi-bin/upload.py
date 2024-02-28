@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 
 import os, sys, tempfile, shutil, hashlib, tarfile
 import cgi, cgitb

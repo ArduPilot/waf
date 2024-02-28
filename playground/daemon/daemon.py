@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Matthias Jahn 2006
 # rewritten by Thomas Nagy 2009

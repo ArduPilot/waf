@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Philipp Bender, 2012
 # Matt Clarkson, 2012

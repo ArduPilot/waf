@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Sebastian Schlingmann, 2008
 # Thomas Nagy, 2008-2018 (ita)

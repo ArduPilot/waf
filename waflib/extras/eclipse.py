@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Eclipse CDT 5.0 generator for Waf
 # Richard Quirk 2009-1011 (New BSD License)

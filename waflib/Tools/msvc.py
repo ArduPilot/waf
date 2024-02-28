@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Carlos Rafael Giani, 2006 (dv)
 # Tamas Pal, 2007 (folti)

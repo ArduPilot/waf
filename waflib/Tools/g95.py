@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # KWS 2010
 # Thomas Nagy 2016-2018 (ita)

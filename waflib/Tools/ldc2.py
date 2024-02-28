@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 # Alex Rønne Petersen, 2012 (alexrp/Zor)
 

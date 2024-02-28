@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 # encoding: UTF-8
 # Petar Forai
 # Thomas Nagy 2008-2010 (ita)

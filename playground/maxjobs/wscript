@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python3
 
 # the Task class attribute "maxjobs" was deprecated in Waf 1.6
 # limiting the amount of jobs is commonly done by adding sequential

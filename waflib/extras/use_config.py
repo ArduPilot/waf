@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 # Mathieu Courtois - EDF R&D, 2013 - http://www.code-aster.org
 
