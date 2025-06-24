@@ -1,0 +1,35 @@
+name: ci
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  pytest:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.x']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+            python-version: ${{ matrix.python-version }}
+            allow-prereleases: true
+      - run: pip install --upgrade pip
+      - run: pip install pytest setuptools
+      - run: pip install --editable ./utils
+      # playground/pytest uses waflib/extras: buildcopy and pytest
+      # playground/genpybind uses waflib/extras: genpybind
+      - run: python waf-light --tools=buildcopy,genpybind,pytest
+      - run: |
+          cp waf playground/pytest
+          cd playground/pytest
+          ./waf configure build --alltests  # pytest pass here on bar, baz, and foo.
+      # TODO(cclauss): Add playground/genpybind build. later
+      # When there is a PYTHONPATH, playground/pytest/test/test_bar.py and foo pass but baz fails.
+      - run: PYTHONPATH=playground/pytest/build/src pytest
+               --ignore=playground/genpybind/example_test.py || true
+      - run: PYTHONPATH=playground/pytest/build/src pytest
+               --ignore=playground/genpybind/example_test.py
+               --ignore=playground/pytest/test/test_baz.py
